@@ -1,0 +1,12 @@
+{
+  "name": "sample",
+  "version": "0.0.0",
+  "scripts": {
+    "serve": "npx vite",
+    "build": "npx vite build",
+    "preview": "npx vite preview"
+  },
+  "devDependencies": {
+    "vite": "^2.8.0"
+  }
+}
