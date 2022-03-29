@@ -41,63 +41,65 @@ export function patch(VNode1: HTMLNode, VNode2: HTMLNode) {
   // @todo Remve this !
   const element = (VNode2.element = VNode1.element!);
 
-  // Now we have to check the difference between the two vnodes
+  /* Check for difference between the two VNodes and update DOM if needed */
 
-  // If the nodes are of different tags, assume that the whole content has changed.
+  // If VNodes have different tags, assume that the whole content has changed.
   if (VNode1.tag !== VNode2.tag) {
-    // Just unmount the old node and mount the new node
+    // Unmount old node and mount new node
     unmount(VNode1);
-    // @todo Remove the !
-    mount(VNode2, element.parentNode!);
-    return;
+    mount(VNode2, element.parentNode!); // @todo Remove the !
   }
 
-  // Nodes have same tags
-  // So we have two checks remaining
-  // - Props
-  // - Children
+  // Repatch node if children type changed, e.g. from text to a VNodes or an array of VNodes
+  else if (typeof VNode2.children !== typeof VNode1.children) {
+    // Unmount old node and mount new node
+    unmount(VNode1);
+    mount(VNode2, element.parentNode!); // @todo Remove the !
+  }
 
-  // @todo I am not going to check the props for now because it would just lengthen the post and miss the point.
-  // @todo I might write a third article which contains the full implementation
+  // If new VNode has a string as its child, update textContent if the two strings are different
+  else if (typeof VNode2.children === "string") {
+    if (VNode2.children !== VNode1.children)
+      element.textContent = VNode2.children;
+  }
 
-  // Checking the children
-  // If the new node has a string for children
-  // And the two children are **strictly** different
-  if (
-    typeof VNode2.children === "string" &&
-    VNode2.children !== VNode1.children
-  ) {
-    element.textContent = VNode2.children;
-    return;
-  } else {
-    // need the else to do control flow analysis, as child should be string instead of HTML element
+  //
+  else if (typeof VNode1.children === "string") {
+  }
 
+  // If VNodes have same the tag, and both have array of VNodes as their child, check for Prop or Child diff
+  else {
+    // @todo Check the props here
+    // @todo I am not going to check the props for now because it would just lengthen the post and miss the point. I might write a third article which contains the full implementation
+
+    /* Check array diff */
     // If the new node has an array of children
     // - The length of children is the same
     // - The old node has more children than the new one
     // - The new node has more children than the old one
 
     // Find out the lengths
-    const children1 = VNode1.children;
+    // const children1 = VNode1.children; // This only works if the empty else if is included
+    const children1 = VNode1.children as HTMLNode[];
     const children2 = VNode2.children;
     const commonLen = Math.min(children1.length, children2.length);
 
     // Recursively call patch for all the common children
     for (let i = 0; i < commonLen; i++) {
-      patch(children1[i], children2[i]);
+      patch(children1[i]!, children2[i]!);
+    }
+
+    if (typeof VNode1.children === "string") {
     }
 
     // If the new node has fewer children
-    if (children1.length > children2.length) {
+    if (children1.length > children2.length)
       children1.slice(children2.length).forEach(unmount);
-    }
-
     // If the new node has more children
-    if (children2.length > children1.length) {
-      children2.slice(children1.length).forEach((child) => {
-        mount(child, element);
-      });
-    }
+    else if (children2.length > children1.length)
+      children2
+        .slice(children1.length)
+        .forEach((child) => mount(child, element));
   }
 }
 
