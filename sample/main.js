@@ -1,16 +1,17 @@
-import { mount, createVNode, patch } from "../dist";
+import { createApp, createVNode } from "../dist";
 
-const vnode = createVNode("ul", {}, [
-  createVNode("li", {}, createVNode("p", {}, "test")),
-  createVNode("li", {}, createVNode("p", {}, "test 2")),
-  createVNode("li", {}, createVNode("p", {}, "test 3")),
-]);
+createApp(
+  {
+    val: Math.random(),
+  },
 
-const vnode2 = createVNode("ul", {}, [
-  createVNode("li", {}, createVNode("p", {}, "new test")),
-  createVNode("li", {}, createVNode("p", {}, "new test 2")),
-  createVNode("li", {}, createVNode("p", {}, "new test 3")),
-]);
+  (state) =>
+    createVNode("div", {}, [
+      createVNode("ul", {}, [
+        createVNode("li", {}, createVNode("p", {}, "state " + state.val)),
+        createVNode("li", {}, createVNode("p", {}, "state " + state.val)),
+      ]),
+    ]),
 
-mount(vnode, document.getElementById("app"));
-setTimeout(() => patch(vnode, vnode2), 3000);
+  document.getElementById("app")
+);

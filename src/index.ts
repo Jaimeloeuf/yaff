@@ -124,6 +124,15 @@ export function unmount(vnode: HTMLNode) {
   if (vnode.element) vnode.element.parentNode?.removeChild(vnode.element);
 }
 
+// @todo Actually this might be a Class so that it is more flexible?
+export function createApp(
+  initialState: any,
+  app: (state: any) => HTMLNode,
+  container: HTMLElement
+) {
+  mount(app(initialState), container);
+}
+
 /**
  * Find diff in VDom and update elements as needed
  */
