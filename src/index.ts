@@ -1,11 +1,11 @@
 import { HTMLTags } from "./types/HTMLTags";
 
-type vDomNode = {
+type VNode = {
   tag: HTMLTags;
 
   props: Record<string, string>;
 
-  child: Array<vDomNode> | string;
+  child: Array<VNode> | string;
 
   /**
    * Reference to the HTML Element created for this virtual node.
@@ -13,17 +13,11 @@ type vDomNode = {
   el?: HTMLElement;
 };
 
-type VDom = {
-  root: vDomNode;
-};
-
-// Or should VDom just be an alias to HTMLNode directly?
-
 export function createVNode(
   tag: HTMLTags,
-  props: vDomNode["props"],
-  children: vDomNode | Array<vDomNode> | string = []
-): vDomNode {
+  props: VNode["props"],
+  children: VNode | Array<VNode> | string = []
+): VNode {
   return {
     tag,
     props,
@@ -38,35 +32,39 @@ export function createVNode(
 // Alias
 export const h = createVNode;
 
-// Rename 2 to new
-export function patch(VNode1: vDomNode, VNode2: vDomNode) {
+/**
+ * Patches the difference between the original `vNode` and the new `vNode` to
+ * reconcile the 2 and apply the differences to the real DOM.
+ */
+export function patch(originalVNode: VNode, newVNode: VNode) {
   // Assign the parent DOM element
   // @todo Remve this !
-  const element = (VNode2.el = VNode1.el!);
+  const element = (newVNode.el = originalVNode.el!);
 
   /* Check for difference between the two VNodes and update DOM if needed */
 
   // If VNodes have different tags, assume that the whole content has changed.
-  if (VNode1.tag !== VNode2.tag) {
+  if (originalVNode.tag !== newVNode.tag) {
     // Unmount old node and mount new node
-    unmount(VNode1);
-    mount(VNode2, element.parentNode!); // @todo Remove the !
+    unmount(originalVNode);
+    mount(newVNode, element.parentNode!); // @todo Remove the !
   }
 
   // Repatch node if children type changed, e.g. from text to a VNodes or an array of VNodes
-  else if (typeof VNode2.child !== typeof VNode1.child) {
+  else if (typeof newVNode.child !== typeof originalVNode.child) {
     // Unmount old node and mount new node
-    unmount(VNode1);
-    mount(VNode2, element.parentNode!); // @todo Remove the !
+    unmount(originalVNode);
+    mount(newVNode, element.parentNode!); // @todo Remove the !
   }
 
   // If new VNode has a string as its child, update textContent if the two strings are different
-  else if (typeof VNode2.child === "string") {
-    if (VNode2.child !== VNode1.child) element.textContent = VNode2.child;
+  else if (typeof newVNode.child === "string") {
+    if (newVNode.child !== originalVNode.child)
+      element.textContent = newVNode.child;
   }
 
   //
-  else if (typeof VNode1.child === "string") {
+  else if (typeof originalVNode.child === "string") {
   }
 
   // If VNodes have same the tag, and both have array of VNodes as their child, check for Prop or Child diff
@@ -82,8 +80,8 @@ export function patch(VNode1: vDomNode, VNode2: vDomNode) {
 
     // Find out the lengths
     // const children1 = VNode1.children; // This only works if the empty else if is included
-    const children1 = VNode1.child as Array<vDomNode>;
-    const children2 = VNode2.child;
+    const children1 = originalVNode.child as Array<VNode>;
+    const children2 = newVNode.child;
     const commonLen = Math.min(children1.length, children2.length);
 
     // Recursively call patch for all the common children
@@ -91,7 +89,7 @@ export function patch(VNode1: vDomNode, VNode2: vDomNode) {
       patch(children1[i]!, children2[i]!);
     }
 
-    if (typeof VNode1.child === "string") {
+    if (typeof originalVNode.child === "string") {
     }
 
     // If the new node has fewer children
@@ -105,7 +103,7 @@ export function patch(VNode1: vDomNode, VNode2: vDomNode) {
   }
 }
 
-export function mount(vnode: vDomNode, container: HTMLElement | ParentNode) {
+export function mount(vnode: VNode, container: HTMLElement | ParentNode) {
   const element = (vnode.el = document.createElement(vnode.tag));
 
   Object.entries(vnode.props || {}).forEach(([key, value]) =>
@@ -119,16 +117,16 @@ export function mount(vnode: vDomNode, container: HTMLElement | ParentNode) {
   container.appendChild(element);
 }
 
-export function unmount(vnode: vDomNode) {
+export function unmount(vNode: VNode) {
   // @todo Fix parentNode possibly undefined
   // @todo Fix element possibly undefined
-  if (vnode.el) vnode.el.parentNode?.removeChild(vnode.el);
+  if (vNode.el) vNode.el.parentNode?.removeChild(vNode.el);
 }
 
 // @todo Actually this might be a Class so that it is more flexible?
 export function createApp(
   initialState: any,
-  app: (state: any) => vDomNode,
+  app: (state: any) => VNode,
   container: HTMLElement
 ) {
   mount(app(initialState), container);
