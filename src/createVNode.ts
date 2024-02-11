@@ -1,3 +1,9 @@
+import type { VNode } from "./VNode";
+import type { HTMLTags } from "./types/HTMLTags";
+
+/**
+ * Creates a new `VNode` that can be mounted onto the DOM.
+ */
 export function createVNode(
   tag: HTMLTags,
   props: VNode["props"],
