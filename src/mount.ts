@@ -4,9 +4,22 @@ import type { VNode } from "./VNode";
 export function mount(vnode: VNode, container: HTMLElement | ParentNode) {
   const element = (vnode.el = document.createElement(vnode.tag));
 
-  Object.entries(vnode.props || {}).forEach(([key, value]) =>
-    element.setAttribute(key, value as string)
-  );
+  Object.entries(vnode.props || {}).forEach(([attributeName, attribute]) => {
+    // If attribute name start with a low dash, treat it as an indicator that
+    // this attribute is an event.
+    if (attributeName.startsWith("_")) {
+      // @todo deal with the type casting
+      element.addEventListener(
+        attributeName.slice(1),
+        attribute as any as EventListenerOrEventListenerObject
+      );
+    }
+
+    // Set attribute as is if not a special attribute type.
+    else {
+      element.setAttribute(attributeName, attribute);
+    }
+  });
 
   if (typeof vnode.child === "string") element.textContent = vnode.child;
   // Recursively mount the children
