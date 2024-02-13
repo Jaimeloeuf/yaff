@@ -379,6 +379,19 @@ export class f {
     this._attrs.class = classNames;
     return this;
   }
+
+  /**
+   * Returns `this` to make this method chainable.
+   */
+  event(eventName: string, eventHandler: EventListener) {
+    if (this._event === undefined) {
+      this._event = {};
+    }
+
+    this._event[eventName] = eventHandler;
+    return this;
+  }
+
   /**
    * Call this method last as this will create the `VNode` right after.
    */
@@ -399,6 +412,9 @@ export class f {
     return {
       tag: this.tag,
       attrs: this._attrs,
+      // non-null assertion operator (!) is used to circumvent the TS setting
+      // `exactOptionalPropertyTypes` in this local context only.
+      event: this._event!,
       child: this._child ?? [],
     };
   }

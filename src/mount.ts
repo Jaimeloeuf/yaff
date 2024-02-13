@@ -11,6 +11,12 @@ export function mount(vnode: VNode, container: HTMLElement | ParentNode) {
     element.setAttribute(attributeName, attribute);
   }
 
+  if (vnode.event !== undefined) {
+    for (const [eventName, eventHandler] of Object.entries(vnode.event)) {
+      element.addEventListener(eventName, eventHandler);
+    }
+  }
+
   if (typeof vnode.child === "string") {
     element.textContent = vnode.child;
   }
