@@ -7,24 +7,39 @@ import type { VNode } from "./VNode";
  * reconcile the 2 and apply the differences to the real DOM.
  */
 export function patch(originalVNode: VNode, newVNode: VNode) {
-  // Assign the parent DOM element
-  // @todo Remve this !
-  const element = (newVNode.el = originalVNode.el!);
+  if (originalVNode.el === undefined) {
+    throw new Error(`originalVNode.el is not set`);
+  }
 
-  /* Check for difference between the two VNodes and update DOM if needed */
+  /**
+   * Set new vNode's element to be the original element first, since it might
+   * reuse it with just some changes. If the tag changed or something happens
+   * that require a new element, a new one will be created to replace this.
+   */
+  newVNode.el = originalVNode.el;
+
+  /**
+   * Hold a reference to the parent DOM node before any potential unmounting to
+   * replace with a new node, since the mounting process right after unmounting
+   * needs the parent node to mount to, which will be lost when trying to access
+   * it from the DOM element itself since it is no longer mounted now.
+   */
+  const originalParentNode = originalVNode.el.parentNode;
+  if (originalParentNode === null) {
+    throw new Error(`originalVNode.el.parentNode is not accessible`);
+  }
 
   // If VNodes have different tags, assume that the whole content has changed.
   if (originalVNode.tag !== newVNode.tag) {
-    // Unmount old node and mount new node
     unmount(originalVNode);
-    mount(newVNode, element.parentNode!); // @todo Remove the !
+    mount(newVNode, originalParentNode);
   }
 
-  // Repatch node if children type changed, e.g. from text to a VNodes or an array of VNodes
+  // Repatch node if children type changed, e.g. from text to a VNodes or an
+  // array of VNodes.
   else if (typeof newVNode.child !== typeof originalVNode.child) {
-    // Unmount old node and mount new node
     unmount(originalVNode);
-    mount(newVNode, element.parentNode!); // @todo Remove the !
+    mount(newVNode, originalParentNode);
   }
 
   // If the tags are the same, and its child nodes are of the same type,
@@ -34,7 +49,7 @@ export function patch(originalVNode: VNode, newVNode: VNode) {
   // of vnode child to Arra
   else if (typeof newVNode.child === "string") {
     if (newVNode.child !== originalVNode.child) {
-      element.textContent = newVNode.child;
+      newVNode.el.textContent = newVNode.child;
     }
   }
 
@@ -80,7 +95,13 @@ export function patch(originalVNode: VNode, newVNode: VNode) {
     else if (newChild.length > originalChild.length) {
       newChild
         .slice(originalChild.length)
-        .forEach((child) => mount(child, element));
+        /** @todo
+         * Remove !, this should be fixed in TS 5.4
+         * References:
+         * https://github.com/microsoft/TypeScript/pull/56908
+         * https://devblogs.microsoft.com/typescript/announcing-typescript-5-4-beta/#preserved-narrowing-in-closures-following-last-assignments
+         */
+        .forEach((child) => mount(child, newVNode.el!));
     }
   }
 }
