@@ -3,10 +3,9 @@ import { patchFF } from "./patch";
 import type { VNode } from "./VNode";
 
 export class Yaff<State> {
-  currentVNode: VNode;
-
-  mount: (vnode: VNode, container: HTMLElement | ParentNode) => void;
-  patch: (originalVNode: VNode, newVNode: VNode) => void;
+  private currentVNode: VNode;
+  private mount: (vnode: VNode, container: HTMLElement | ParentNode) => void;
+  private patch: (originalVNode: VNode, newVNode: VNode) => void;
 
   constructor(
     container: HTMLElement,
@@ -43,5 +42,5 @@ export class Yaff<State> {
 export const yaff = <State>(
   container: HTMLElement,
   initialState: State,
-  rootComponent: (state: State) => VNode
+  rootComponent: (state: State, rerender: (newState: State) => void) => VNode
 ) => new Yaff(container, initialState, rootComponent);
