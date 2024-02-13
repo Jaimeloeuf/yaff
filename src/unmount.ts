@@ -1,7 +1,8 @@
 import type { VNode } from "./VNode";
 
+/**
+ * Unmount a `VNode` from the DOM.
+ */
 export function unmount(vNode: VNode) {
-  // @todo Fix parentNode possibly undefined
-  // @todo Fix element possibly undefined
-  if (vNode.el) vNode.el.parentNode?.removeChild(vNode.el);
+  vNode.el?.remove();
 }

@@ -71,16 +71,16 @@ export function patch(originalVNode: VNode, newVNode: VNode) {
       patch(originalChild[i]!, newChild[i]!);
     }
 
-    if (typeof originalVNode.child === "string") {
+    // If the new node has fewer children
+    if (originalChild.length > newChild.length) {
+      originalChild.slice(newChild.length).forEach(unmount);
     }
 
-    // If the new node has fewer children
-    if (originalChild.length > newChild.length)
-      originalChild.slice(newChild.length).forEach(unmount);
     // If the new node has more children
-    else if (newChild.length > originalChild.length)
+    else if (newChild.length > originalChild.length) {
       newChild
         .slice(originalChild.length)
         .forEach((child) => mount(child, element));
+    }
   }
 }
