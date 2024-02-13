@@ -1,34 +1,25 @@
 import type { VNode } from "./VNode";
 
-// @todo ParentNode type like wrong ah?
+/**
+ * Creates a new DOM element based on the given `VNode` and mounts it onto the
+ * given parent container element / DOM node.
+ */
 export function mount(vnode: VNode, container: HTMLElement | ParentNode) {
   const element = (vnode.el = document.createElement(vnode.tag));
 
-  Object.entries(vnode.attrs || {}).forEach(([attributeName, attribute]) => {
-    // If attribute name start with a low dash, treat it as an indicator that
-    // this attribute is an event.
-    if (attributeName.startsWith("_")) {
-      // @todo deal with the type casting
-      element.addEventListener(
-        attributeName.slice(1),
-        attribute as any as EventListenerOrEventListenerObject
-      );
-    }
-
-    // Set attribute as is if not a special attribute type.
-    else {
-      element.setAttribute(attributeName, attribute);
-    }
-  });
+  for (const [attributeName, attribute] of Object.entries(vnode.attrs)) {
+    element.setAttribute(attributeName, attribute);
+  }
 
   if (typeof vnode.child === "string") {
     element.textContent = vnode.child;
   }
 
-  // Recursively mount the children
-  // @todo Maybe more efficient to do for loop directly instead?
+  // Create and mount child VNodes that are not of string type.
   else {
-    vnode.child.forEach((child) => mount(child, element));
+    for (const child of vnode.child) {
+      mount(child, element);
+    }
   }
 
   container.appendChild(element);
