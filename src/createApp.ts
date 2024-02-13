@@ -1,22 +1,37 @@
-import { mount } from "./mount";
-import { patch } from "./patch";
+import { mountFF } from "./mount";
+import { patchFF } from "./patch";
 import type { VNode } from "./VNode";
 
 export class Yaff<State> {
   currentVNode: VNode;
 
+  mount: (vnode: VNode, container: HTMLElement | ParentNode) => void;
+  patch: (originalVNode: VNode, newVNode: VNode) => void;
+
   constructor(
     container: HTMLElement,
-    initialState: State,
+    private state: State,
     private readonly rootComponent: (state: State) => VNode
   ) {
-    this.currentVNode = rootComponent.call(this, initialState);
-    mount(this.currentVNode, container);
+    this.mount = mountFF(
+      (eventHandler: Function) => (event: Event) =>
+        this.rerender(eventHandler(this.state, event))
+    );
+    this.patch = patchFF(this.mount);
+
+    this.currentVNode = rootComponent.call(this, state);
+    this.mount(this.currentVNode, container);
   }
 
-  rerender(newState: State) {
-    const newVNode = this.rootComponent.call(this, newState);
-    patch(this.currentVNode, newVNode);
+  /**
+   * Update local state, and create new VNodes using the rootComponent and new
+   * state, before patching the new VNode changes onto the existing VNode.
+   */
+  private rerender(newState: State) {
+    this.state = newState;
+
+    const newVNode = this.rootComponent.call(this, this.state);
+    this.patch(this.currentVNode, newVNode);
     this.currentVNode = newVNode;
   }
 }

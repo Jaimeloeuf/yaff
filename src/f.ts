@@ -1,5 +1,6 @@
 import type { VNode } from "./VNode";
 import type { HTMLTags } from "./types/HTMLTags";
+import type { EventListenerStateTransformer } from "./types/EventListener";
 
 export class f {
   /**
@@ -362,6 +363,7 @@ export class f {
   constructor(private readonly tag: HTMLTags) {}
 
   private _attrs: VNode["attrs"] = {};
+  private _event: VNode["event"] = {};
   private _child?: VNode["child"];
 
   /**
@@ -383,7 +385,7 @@ export class f {
   /**
    * Returns `this` to make this method chainable.
    */
-  event(eventName: string, eventHandler: EventListener) {
+  event(eventName: string, eventHandler: EventListenerStateTransformer) {
     if (this._event === undefined) {
       this._event = {};
     }
