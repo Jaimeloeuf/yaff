@@ -6,12 +6,12 @@ export class Yaff<State> {
   currentVNode: VNode;
 
   constructor(
-    private readonly container: HTMLElement,
-    private readonly initialState: State,
+    container: HTMLElement,
+    initialState: State,
     private readonly rootComponent: (state: State) => VNode
   ) {
-    this.currentVNode = rootComponent.call(this, this.initialState);
-    mount(this.currentVNode, this.container);
+    this.currentVNode = rootComponent.call(this, initialState);
+    mount(this.currentVNode, container);
   }
 
   rerender(newState: State) {
