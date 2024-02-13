@@ -6,17 +6,17 @@ import type { HTMLTags } from "./types/HTMLTags";
  */
 export function createVNode(
   tag: HTMLTags,
-  props: VNode["props"],
-  children: VNode | Array<VNode> | string = []
+  attrs: VNode["attrs"],
+  child: VNode | Array<VNode> | string = []
 ): VNode {
   return {
     tag,
-    props,
-    child: Array.isArray(children)
-      ? children
-      : typeof children === "string"
-      ? children
-      : [children],
+    attrs,
+    child: Array.isArray(child)
+      ? child
+      : typeof child === "string"
+      ? child
+      : [child],
   };
 }
 

@@ -4,7 +4,7 @@ import type { VNode } from "./VNode";
 export function mount(vnode: VNode, container: HTMLElement | ParentNode) {
   const element = (vnode.el = document.createElement(vnode.tag));
 
-  Object.entries(vnode.props || {}).forEach(([attributeName, attribute]) => {
+  Object.entries(vnode.attrs || {}).forEach(([attributeName, attribute]) => {
     // If attribute name start with a low dash, treat it as an indicator that
     // this attribute is an event.
     if (attributeName.startsWith("_")) {

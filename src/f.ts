@@ -361,27 +361,33 @@ export class f {
 
   constructor(private readonly tag: HTMLTags) {}
 
-  private attributes?: VNode["props"];
-  private child?: VNode["child"];
+  private _attrs: VNode["attrs"] = {};
+  private _child?: VNode["child"];
 
   /**
    * Returns `this` to make this method chainable.
    */
-  attrs(attrs: VNode["props"]) {
-    this.attributes = attrs;
-
+  attrs(attributes: VNode["attrs"]) {
+    this._attrs = attributes;
     return this;
   }
 
   /**
+   * Returns `this` to make this method chainable.
+   */
+  class(classNames: string) {
+    this._attrs.class = classNames;
+    return this;
+  }
+  /**
    * Call this method last as this will create the `VNode` right after.
    */
-  children(children: VNode | Array<VNode> | string = []) {
-    this.child = Array.isArray(children)
-      ? children
-      : typeof children === "string"
-      ? children
-      : [children];
+  child(child: VNode | Array<VNode> | string = []) {
+    this._child = Array.isArray(child)
+      ? child
+      : typeof child === "string"
+      ? child
+      : [child];
 
     return this.create();
   }
@@ -392,8 +398,8 @@ export class f {
   create(): VNode {
     return {
       tag: this.tag,
-      props: this.attributes ?? {},
-      child: this.child ?? [],
+      attrs: this._attrs,
+      child: this._child ?? [],
     };
   }
 }
