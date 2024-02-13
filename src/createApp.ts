@@ -11,7 +11,10 @@ export class Yaff<State> {
   constructor(
     container: HTMLElement,
     private state: State,
-    private readonly rootComponent: (state: State) => VNode
+    private readonly rootComponent: (
+      state: State,
+      rerender: (newState: State) => void
+    ) => VNode
   ) {
     this.mount = mountFF(
       (eventHandler: Function) => (event: Event) =>
@@ -19,7 +22,7 @@ export class Yaff<State> {
     );
     this.patch = patchFF(this.mount);
 
-    this.currentVNode = rootComponent.call(this, state);
+    this.currentVNode = rootComponent(state, this.rerender.bind(this));
     this.mount(this.currentVNode, container);
   }
 
@@ -30,7 +33,7 @@ export class Yaff<State> {
   private rerender(newState: State) {
     this.state = newState;
 
-    const newVNode = this.rootComponent.call(this, this.state);
+    const newVNode = this.rootComponent(this.state, this.rerender.bind(this));
     this.patch(this.currentVNode, newVNode);
     this.currentVNode = newVNode;
   }
