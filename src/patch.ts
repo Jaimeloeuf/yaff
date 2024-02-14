@@ -1,4 +1,5 @@
 import { unmount } from "./unmount";
+import { patchAttributes } from "./patchAttributes";
 import type { VNode } from "./VNode";
 
 /**
@@ -61,6 +62,9 @@ export const patchFF = (
       if (newVNode.child !== originalVNode.child) {
         newVNode.el.textContent = newVNode.child;
       }
+
+      // Since this DOM element is kept the same, patch any attributes changes.
+      patchAttributes(originalVNode, newVNode);
     }
 
     // This is a no-op conditional used only for TS type narrowing. Because in the
@@ -70,11 +74,16 @@ export const patchFF = (
     // be a string too. However TS can't type narrow it properly, so this helps it
     // to know that in the final else block, both VNode's child will not be string.
     else if (typeof originalVNode.child === "string") {
+      // Since this DOM element is kept the same, patch any attributes changes.
+      patchAttributes(originalVNode, newVNode);
     }
 
     // If VNodes have same the tag, and both have array of VNodes as their child,
     // check for Prop or Child diff
     else {
+      // Since this DOM element is kept the same, patch any attributes changes.
+      patchAttributes(originalVNode, newVNode);
+
       /* Check array diff */
       // If the new node has an array of children
       // - The length of children is the same
