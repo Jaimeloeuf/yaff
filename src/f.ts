@@ -367,14 +367,19 @@ export class f {
   private _child?: VNode["child"];
 
   /**
+   * This will merge the given attributes to whatever attributes already set so
+   * as to prevent overriding them. E.g. when using this after setting `class`.
+   *
    * Returns `this` to make this method chainable.
    */
   attrs(attributes: VNode["attrs"]) {
-    this._attrs = attributes;
+    this._attrs = { ...this._attrs, ...attributes };
     return this;
   }
 
   /**
+   * Overrides and existing class string previously set.
+   *
    * Returns `this` to make this method chainable.
    */
   class(classNames: string) {
@@ -395,6 +400,8 @@ export class f {
   }
 
   /**
+   * Call this method to set the child VNode/value of the current node.
+   *
    * Call this method last as this will create the `VNode` right after.
    */
   child(child: VNode | Array<VNode> | string = []) {
@@ -409,6 +416,8 @@ export class f {
 
   /**
    * Call this method last to create the `VNode`.
+   *
+   * Call this directly if the element has no child, e.g. self closing tags.
    */
   create(): VNode {
     return {
