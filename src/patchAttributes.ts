@@ -38,5 +38,7 @@ export function patchAttributes(originalVNode: VNode, newVNode: VNode) {
 
   // Although events are technically attributes too, they are added/removed
   // differently, since an event cannot be changed once attached until the
-  // vNode / DOM element itself is removed.
+  // vNode / DOM element itself is removed. Assumes event listeners are removed
+  // automatically once the DOM element it is attached to is removed.
+  // https://stackoverflow.com/questions/12528049/if-a-dom-element-is-removed-are-its-listeners-also-removed-from-memory
 }
