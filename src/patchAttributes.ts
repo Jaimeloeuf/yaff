@@ -8,6 +8,19 @@ export function patchAttributes(originalVNode: VNode, newVNode: VNode) {
   // previously set, or update the attribute value if it has changed.
   for (const [attributeName, attribute] of Object.entries(newVNode.attrs)) {
     if (originalVNode.attrs[attributeName] !== attribute) {
+      // Value is special in that it is both an attribute and a HTML DOM element
+      // property, where the property value takes precedence over the attribute
+      // value. Therefore to make sure it works, the value property must be set
+      // to the same value as the value attribute.
+      // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes#content_versus_idl_attributes
+      // https://stackoverflow.com/questions/29929797/setattribute-doesnt-work-the-way-i-expect-it-to
+      // https://stackoverflow.com/a/68249079
+      if (attributeName === "value") {
+        // Typecasting it since it assumes users know that the element they are
+        // using have a value property, e.g. an input element.
+        (newVNode.el as HTMLElement & { value: unknown }).value = attribute;
+      }
+
       newVNode.el?.setAttribute(attributeName, attribute);
     }
   }
