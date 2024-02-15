@@ -102,12 +102,14 @@ export const patchFF = (
         patch(originalChild[i]!, newChild[i]!);
       }
 
-      // If the new node has fewer children
+      // After patching all the common children, need to deal with new child
+      // VNodes, or when there are more old child VNodes left over.
+      // If the new node has fewer children, remove the old child VNodes.
       if (originalChild.length > newChild.length) {
         originalChild.slice(newChild.length).forEach(unmount);
       }
 
-      // If the new node has more children
+      // If the new node has more children, mount all of them.
       else if (newChild.length > originalChild.length) {
         newChild
           .slice(originalChild.length)

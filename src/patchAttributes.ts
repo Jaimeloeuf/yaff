@@ -22,4 +22,8 @@ export function patchAttributes(originalVNode: VNode, newVNode: VNode) {
       newVNode.el?.removeAttribute(attribute);
     }
   }
+
+  // Although events are technically attributes too, they are added/removed
+  // differently, since an event cannot be changed once attached until the
+  // vNode / DOM element itself is removed.
 }
