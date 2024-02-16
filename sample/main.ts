@@ -20,8 +20,14 @@ function addTodo(state) {
  * Function to define a new application to mount onto the DOM.
  */
 function todo() {
+  const appRootElement = document.getElementById("app");
+
+  if (appRootElement === null) {
+    throw new Error("App root element 'app' does not exist");
+  }
+
   yaff(
-    document.getElementById("app"),
+    appRootElement,
 
     {
       newTodo: "",
@@ -44,10 +50,10 @@ function todo() {
           })
           .event("input", (state, event) => ({
             ...state,
-            newTodo: event.target.value,
+            newTodo: (event.target as HTMLInputElement).value,
           }))
           .event("keydown", (state, event) => {
-            if (event.key === "Enter") {
+            if ((event as KeyboardEvent).key === "Enter") {
               return addTodo(state);
             }
 
