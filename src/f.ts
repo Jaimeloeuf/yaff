@@ -1,4 +1,4 @@
-import type { VNode } from "./VNode";
+import type { VNode, VNodes } from "./VNode";
 import type { HTMLTags } from "./types/HTMLTags";
 import type { EventListenerStateTransformer } from "./types/EventListener";
 
@@ -404,9 +404,13 @@ export class f {
    *
    * Call this method last as this will create the `VNode` right after.
    */
-  child(child: VNode | Array<VNode> | string = []) {
+  child(child: VNode | VNodes | string = []) {
+    // Flattern child VNode so the final child property of the VNode is a flat
+    // array of VNodes, nested VNode arrays are supported here to make template
+    // creation easier instead of requiring user to spread their VNode arrays.
+    // https://github.com/microsoft/TypeScript/issues/49280
     this._child = Array.isArray(child)
-      ? child
+      ? (child.flat(Infinity as 1) as Array<VNode>)
       : typeof child === "string"
       ? child
       : [child];

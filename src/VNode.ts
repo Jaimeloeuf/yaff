@@ -27,3 +27,8 @@ export type VNode = {
    */
   event?: Record<string, EventListenerStateTransformer>;
 };
+
+/**
+ * `VNodes` can recursively contain itself, e.g. `[VNode1, [VNode2, VNode3]]`
+ */
+export type VNodes = Array<VNode | VNodes>;

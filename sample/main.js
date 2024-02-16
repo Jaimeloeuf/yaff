@@ -69,11 +69,14 @@ function todo() {
           .child("Create"),
 
         state.todos.length > 0
-          ? f.ol.child(
-              state.todos.map((todo, index) =>
-                f.li.class(index & 1 ? "bg-zinc-50" : "").child(todo)
-              )
-            )
+          ? [
+              f.p.child(`You have ${state.todos.length} todos.`),
+              f.ol.child(
+                state.todos.map((todo, index) =>
+                  f.li.class(index & 1 ? "bg-zinc-50" : "").child(todo)
+                )
+              ),
+            ]
           : f.p.child("No todos"),
       ]);
     }
