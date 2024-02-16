@@ -409,11 +409,19 @@ export class f {
     // array of VNodes, nested VNode arrays are supported here to make template
     // creation easier instead of requiring user to spread their VNode arrays.
     // https://github.com/microsoft/TypeScript/issues/49280
-    this._child = Array.isArray(child)
-      ? (child.flat(Infinity as 1) as Array<VNode>)
-      : typeof child === "string"
-      ? child
-      : [child];
+    if (Array.isArray(child)) {
+      this._child = child.flat(Infinity as 1) as Array<VNode>;
+    }
+
+    // String values are left as is
+    else if (typeof child === "string") {
+      this._child = child;
+    }
+
+    // Since `VNode.child` is Array<VNode> or string, nest it in an array.
+    else {
+      this._child = [child];
+    }
 
     return this.create();
   }
