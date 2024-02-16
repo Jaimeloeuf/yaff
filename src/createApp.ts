@@ -15,8 +15,8 @@ export class Yaff<State> {
       rerender: (newState: State) => void
     ) => VNode
   ) {
-    this.mount = mountFF(
-      (eventHandler: Function) => (event: Event) =>
+    this.mount = mountFF<State>(
+      (eventHandler) => (event) =>
         this.rerender(eventHandler(this.state, event))
     );
     this.patch = patchFF(this.mount);

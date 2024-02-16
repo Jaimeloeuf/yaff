@@ -9,9 +9,9 @@ import type { EventListenerStateTransformer } from "./types/EventListener";
  * `mount` creates a new DOM element based on the given `VNode` and mounts it
  * onto the given parent container element / DOM node.
  */
-export const mountFF = (
+export const mountFF = <State>(
   eventHandlerWrapper: (
-    eventHandler: EventListenerStateTransformer
+    eventHandler: EventListenerStateTransformer<State>
   ) => (event: Event) => void
 ) =>
   /**

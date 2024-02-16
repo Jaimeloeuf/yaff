@@ -390,7 +390,10 @@ export class f {
   /**
    * Returns `this` to make this method chainable.
    */
-  event(eventName: string, eventHandler: EventListenerStateTransformer) {
+  event<State>(
+    eventName: string,
+    eventHandler: EventListenerStateTransformer<State>
+  ) {
     if (this._event === undefined) {
       this._event = {};
     }
