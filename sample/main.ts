@@ -61,6 +61,8 @@ function todo() {
           })
           .create(),
 
+        state.todos.length === 0 && f.p.child("Enter a todo to get started"),
+
         f.div
           .attrs({
             style: "padding-top: 1rem;",

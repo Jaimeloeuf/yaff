@@ -404,13 +404,25 @@ export class f {
    *
    * Call this method last as this will create the `VNode` right after.
    */
-  child(child: VNode | VNodes | string = []) {
+  child(child: VNode | VNodes | string | false = []) {
+    // No-op to ignore conditionally hidden VNode child values using logical OR
+    // and AND operator short circuiting instead of forcing them to use ternary
+    // operators to conditional include VNodes..
+    if (child === false) {
+    }
+
     // Flattern child VNode so the final child property of the VNode is a flat
     // array of VNodes, nested VNode arrays are supported here to make template
     // creation easier instead of requiring user to spread their VNode arrays.
     // https://github.com/microsoft/TypeScript/issues/49280
-    if (Array.isArray(child)) {
-      this._child = child.flat(Infinity as 1) as Array<VNode>;
+    else if (Array.isArray(child)) {
+      // Abbrevated version without explicit type annotations
+      // this._child = child
+      //   .flat(Infinity as 1)
+      //   .filter((value) => value !== false) as Array<VNode>;
+      this._child = (child.flat(Infinity as 1) as Array<VNode | false>).filter(
+        (value) => value !== false
+      ) as Array<VNode>;
     }
 
     // String values are left as is

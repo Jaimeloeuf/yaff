@@ -30,5 +30,9 @@ export type VNode = {
 
 /**
  * `VNodes` can recursively contain itself, e.g. `[VNode1, [VNode2, VNode3]]`
+ *
+ * Value can be a literal `false` to support conditional rendering without using
+ * the ternary operator by ignoring VNode children that are conditionally hidden
+ * using the logical OR and AND operator short circuiting.
  */
-export type VNodes = Array<VNode | VNodes>;
+export type VNodes = Array<VNodes | VNode | false>;
