@@ -1,9 +1,14 @@
 import { yaff, f } from "../dist";
 
+type State = {
+  newTodo: string;
+  todos: Array<string>;
+};
+
 /**
  * Function that transform the state by saving the draft todo as a new one.
  */
-function addTodo(state) {
+function addTodo(state: State) {
   if (state.newTodo === "") {
     alert("Please enter a valid todo");
     return state;
@@ -26,7 +31,7 @@ function todo() {
     throw new Error("App root element 'app' does not exist");
   }
 
-  yaff(
+  yaff<State>(
     appRootElement,
 
     {
@@ -48,11 +53,11 @@ function todo() {
             value: state.newTodo,
             style: "border-radius: 0.5rem; border-color: rgb(228 228 231);",
           })
-          .event("input", (state, event) => ({
+          .event("input", (state: State, event) => ({
             ...state,
             newTodo: (event.target as HTMLInputElement).value,
           }))
-          .event("keydown", (state, event) => {
+          .event("keydown", (state: State, event) => {
             if ((event as KeyboardEvent).key === "Enter") {
               return addTodo(state);
             }
