@@ -378,12 +378,20 @@ export class f {
   }
 
   /**
-   * Overrides and existing class string previously set.
+   * Sets the class string attribute, merges given classes with any existing
+   * classes previously set through the same method.
    *
    * Returns `this` to make this method chainable.
    */
   class(classNames: string) {
-    this._attrs.class = classNames;
+    this._attrs.class =
+      this._attrs.class === undefined
+        ? classNames
+        : this._attrs.class + " " + classNames;
+
+    // Alternative that will always start with a leading space
+    // this._attrs.class = this._attrs.class ?? "" + " " + classNames;
+
     return this;
   }
 
