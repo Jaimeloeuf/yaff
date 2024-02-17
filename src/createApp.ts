@@ -15,10 +15,14 @@ export class Yaff<State> {
       rerender: (newState: State) => void
     ) => VNode
   ) {
-    this.mount = mountFF<State>(
-      (eventHandler) => (event) =>
-        this.rerender(eventHandler(this.state, event))
-    );
+    this.mount = mountFF<State>((eventHandler) => (event) => {
+      const newState = eventHandler(this.state, event);
+
+      // Only re-render if Event Listener transforms and returns new state.
+      if (newState !== undefined) {
+        this.rerender(newState);
+      }
+    });
     this.patch = patchFF(this.mount);
 
     this.currentVNode = rootComponent(state, this.rerender.bind(this));

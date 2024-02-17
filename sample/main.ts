@@ -11,7 +11,7 @@ type State = {
 function addTodo(state: State) {
   if (state.newTodo === "") {
     alert("Please enter a valid todo");
-    return state;
+    return;
   }
 
   return {
@@ -61,8 +61,6 @@ function todo() {
             if ((event as KeyboardEvent).key === "Enter") {
               return addTodo(state);
             }
-
-            return state;
           })
           .create(),
 
