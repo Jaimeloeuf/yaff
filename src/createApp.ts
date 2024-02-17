@@ -42,9 +42,10 @@ export class Yaff<State> {
   }
 }
 
-// @todo should use an easier way to type the args by inferring constructor type
+/**
+ * Create a new app to mount. This is basically a wrapper around the `Yaff`
+ * constructor, where args are inferred from `Yaff.constructor` type.
+ */
 export const yaff = <State>(
-  container: HTMLElement,
-  initialState: State,
-  rootComponent: (state: State, rerender: (newState: State) => void) => VNode
-) => new Yaff(container, initialState, rootComponent);
+  ...args: ConstructorParameters<typeof Yaff<State>>
+) => new Yaff<State>(...args);
