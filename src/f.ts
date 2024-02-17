@@ -381,9 +381,17 @@ export class f {
    * Sets the class string attribute, merges given classes with any existing
    * classes previously set through the same method.
    *
+   * Multiple chained calls to class method makes it easier to do conditionals
+   * where a && short circuiting expression can be used.
+   *
    * Returns `this` to make this method chainable.
    */
-  class(classNames: string) {
+  class(classNames: string | false) {
+    // Do nothing on short circuited class expressions
+    if (classNames === false) {
+      return this;
+    }
+
     this._attrs.class =
       this._attrs.class === undefined
         ? classNames
