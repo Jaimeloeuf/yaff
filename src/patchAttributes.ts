@@ -27,7 +27,6 @@ export function patchAttributes(originalVNode: VNode, newVNode: VNode) {
 
   // Loop over all attributes of originalVNode to check if it still exists on
   // the newVNode. Remove the attribute if it no longer exists on the newVNode.
-  // @todo Can optimise to skip this if it is a newly created DOM element.
   for (const [attribute] of Object.entries(originalVNode.attrs)) {
     if (!Object.hasOwn(newVNode.attrs, attribute)) {
       // This uses newVNode's el since they share the same el if it is a
