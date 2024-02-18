@@ -89,14 +89,42 @@ function todo() {
 
           state.todos.length > 0
             ? [
-                f.ol.class("list-decimal p-6").child(
-                  state.todos.map((todo, index) =>
-                    f.li
-                      .class("p-1")
-                      .class(index % 2 === 0 && "bg-zinc-50")
-                      .child(todo),
+                f.ol
+                  .class(
+                    "list-decimal p-4 pr-0 marker:text-zinc-400 marker:font-light",
+                  )
+                  .child(
+                    state.todos.map((todo, index) =>
+                      f.li
+                        .class(
+                          "group cursor-pointer p-1 rounded-lg odd:bg-zinc-50",
+                        )
+                        .child(
+                          f.div
+                            .class("flex flex-row items-center justify-between")
+                            .child([
+                              f.p
+                                .class("text-zinc-900 font-extralight")
+                                .child(todo),
+                              f.div
+                                .class(
+                                  "flex flex-col items-center justify-center px-1.5 rounded bg-white shadow-md group-hover:shadow-red-300",
+                                )
+                                .child(
+                                  f.button
+                                    .class(
+                                      "text-zinc-400 group-hover:text-red-400 select-none",
+                                    )
+                                    .event("click", (state: State) => {
+                                      state.todos.splice(index, 1);
+                                      return state;
+                                    })
+                                    .child("X"),
+                                ),
+                            ]),
+                        ),
+                    ),
                   ),
-                ),
               ]
             : f.p
                 .class("py-8 text-3xl font-thin text-zinc-400")
