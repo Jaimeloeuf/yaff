@@ -2,14 +2,16 @@ import { f } from "../../dist";
 import type { State } from "./State";
 
 export function notFound(state: State, rerender) {
-  return f.div.class("h-dvh flex flex-col items-center justify-center").child([
-    f.p.class("text-7xl font-thin text-zinc-400").child("Page Not Found"),
-    f.button
-      .class("pt-8 underline underline-offset-4 text-zinc-500")
-      .event("click", (state: State) => {
-        window.history.pushState({}, "", "/");
-        rerender(state);
-      })
-      .child("Back to Home"),
-  ]);
+  return f.div
+    .class("h-dvh flex flex-col items-center justify-center p-12")
+    .child([
+      f.p.class("text-9xl font-thin text-zinc-400").child("Page Not Found"),
+      f.button
+        .class("pt-8 underline underline-offset-4 text-zinc-500")
+        .event("click", (state: State) => {
+          window.history.pushState({}, "", "/");
+          rerender(state);
+        })
+        .child("Back to Home"),
+    ]);
 }

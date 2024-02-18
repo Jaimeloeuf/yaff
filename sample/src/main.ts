@@ -1,5 +1,6 @@
 import { yaff } from "../../dist";
 import { todo } from "./todo";
+import { about } from "./about";
 import { notFound } from "./notFound";
 import type { State } from "./State";
 
@@ -26,6 +27,8 @@ function main() {
 
       if (window.location.pathname === "/") {
         return todo(state, rerender);
+      } else if (window.location.pathname === "/about") {
+        return about(state, rerender);
       } else {
         return notFound(state, rerender);
       }
