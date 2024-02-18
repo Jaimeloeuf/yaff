@@ -31,8 +31,11 @@ export type VNode = {
 /**
  * `VNodes` can recursively contain itself, e.g. `[VNode1, [VNode2, VNode3]]`
  *
+ * Value can be a raw string to support text nodes, where it will be
+ * automatically wrapped in a `p` tag.
+ *
  * Value can be a literal `false` to support conditional rendering without using
  * the ternary operator by ignoring VNode children that are conditionally hidden
  * using the logical OR and AND operator short circuiting.
  */
-export type VNodes = Array<VNodes | VNode | false>;
+export type VNodes = Array<VNodes | VNode | string | false>;

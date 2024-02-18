@@ -435,13 +435,16 @@ export class f {
     // creation easier instead of requiring user to spread their VNode arrays.
     // https://github.com/microsoft/TypeScript/issues/49280
     else if (Array.isArray(child)) {
-      // Abbrevated version without explicit type annotations
-      // this._child = child
-      //   .flat(Infinity as 1)
-      //   .filter((value) => value !== false) as Array<VNode>;
-      this._child = (child.flat(Infinity as 1) as Array<VNode | false>).filter(
-        (value) => value !== false
-      ) as Array<VNode>;
+      // Transform steps:
+      // 1. Flatten all the way down
+      // 2. Remove short circuited children
+      // 3. Wrap plain text child in 'p' tags to support text nodes
+      this._child = child
+        .flat(Infinity as 1)
+        .filter((value) => value !== false)
+        .map((value) =>
+          typeof value === "string" ? f.p.child(value) : value
+        ) as Array<VNode>;
     }
 
     // String values are left as is
