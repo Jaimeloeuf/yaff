@@ -42,55 +42,67 @@ function todo() {
     function (state) {
       console.log("App state", state);
 
-      return f.create("div").child([
-        f.h1.child("Todos"),
+      return f
+        .create("div")
+        .class("mx-auto max-w-screen-sm p-6")
+        .child([
+          f.div
+            .class("flex flex-row items-center pb-2")
+            .child([
+              f.p.class("text-2xl font-bold").child("Todos"),
+              state.todos.length !== 0 &&
+                f.p
+                  .class("px-2 text-lg font-thin tracking-widest")
+                  .child(`(${state.todos.length})`),
+            ]),
 
-        f.input
-          .class("p-3")
-          .attrs({
-            type: "text",
-            placeholder: "Add a new todo here...",
-            value: state.newTodo,
-            style: "border-radius: 0.5rem; border-color: rgb(228 228 231);",
-          })
-          .event("input", (state: State, event) => ({
-            ...state,
-            newTodo: (event.target as HTMLInputElement).value,
-          }))
-          .event("keydown", (state: State, event) => {
-            if ((event as KeyboardEvent).key === "Enter") {
-              return addTodo(state);
-            }
-          })
-          .create(),
+          f.div.class("flex flex-row items-center gap-4").child([
+            f.input
+              .class(
+                "w-full rounded-lg border border-zinc-200 p-2 outline-none",
+              )
+              .attrs({
+                type: "text",
+                placeholder: "Add a new todo here...",
+                value: state.newTodo,
+              })
+              .event("input", (state: State, event) => ({
+                ...state,
+                newTodo: (event.target as HTMLInputElement).value,
+              }))
+              .event("keydown", (state: State, event) => {
+                if ((event as KeyboardEvent).key === "Enter") {
+                  return addTodo(state);
+                }
+              })
+              .create(),
 
-        state.todos.length === 0 && f.p.child("Enter a todo to get started"),
-
-        f.div
-          .attrs({
-            style: "padding-top: 1rem;",
-          })
-          .create(),
-
-        f.button
-          .attrs({
-            style: "padding-right: 1rem; padding-left: 1rem;",
-          })
-          .event("click", addTodo)
-          .child("Create"),
-
-        state.todos.length > 0
-          ? [
-              f.p.child(`You have ${state.todos.length} todos.`),
-              f.ol.child(
-                state.todos.map((todo, index) =>
-                  f.li.class(index & 1 ? "bg-zinc-50" : "").child(todo)
-                )
+            f.div
+              .class("flex flex-col items-center justify-center text-green-600")
+              .child(
+                f.button
+                  .class("text-4xl font-thin")
+                  .event("click", addTodo)
+                  .child("+"),
               ),
-            ]
-          : f.p.child("No todos"),
-      ]);
-    }
+          ]),
+
+          state.todos.length > 0
+            ? [
+                f.ol.class("list-decimal p-6").child(
+                  state.todos.map((todo, index) =>
+                    f.li
+                      .class("p-1")
+                      .class(index % 2 === 0 && "bg-zinc-50")
+                      .child(todo),
+                  ),
+                ),
+              ]
+            : f.p
+                .class("py-8 text-3xl font-thin text-zinc-400")
+                .child("No todos"),
+        ]);
+    },
   );
 }
 
