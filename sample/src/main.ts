@@ -1,5 +1,6 @@
 import { yaff } from "../../dist";
 import { todo } from "./todo";
+import { notFound } from "./notFound";
 import type { State } from "./State";
 
 /**
@@ -20,10 +21,14 @@ function main() {
       todos: [],
     },
 
-    function (state) {
+    function (state, rerender) {
       console.log("App state", state);
 
-      return todo(state);
+      if (window.location.pathname === "/") {
+        return todo(state, rerender);
+      } else {
+        return notFound(state, rerender);
+      }
     },
   );
 }
