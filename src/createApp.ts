@@ -30,11 +30,14 @@ export class Yaff<State> {
   }
 
   /**
-   * Update local state, and create new VNodes using the rootComponent and new
-   * state, before patching the new VNode changes onto the existing VNode.
+   * Re-render UI after optionally updating local state. UI can be re-rendered
+   * even if state did not change since UI can rely on externally managed state
+   * like window.location.
    */
-  private rerender(newState: State) {
-    this.state = newState;
+  private rerender(newState?: State) {
+    if (newState !== undefined) {
+      this.state = newState;
+    }
 
     const newVNode = this.rootComponent(this.state, this.rerender.bind(this));
     this.patch(this.currentVNode, newVNode);

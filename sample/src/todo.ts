@@ -37,9 +37,9 @@ export function todo(state: State, rerender) {
           .class(
             "text-xl underline underline-offset-4 decoration-1 decoration-zinc-300 text-zinc-400 font-thin",
           )
-          .event("click", (state: State) => {
+          .event("click", () => {
             window.history.pushState({}, "", "/about");
-            rerender(state);
+            rerender();
           })
           .child("about"),
       ]),
