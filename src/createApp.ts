@@ -12,7 +12,7 @@ export class Yaff<State> {
     private state: State,
     private readonly rootComponent: (
       state: State,
-      rerender: (newState: State) => void
+      rerender: (newState?: State) => void
     ) => VNode
   ) {
     this.mount = mountFF<State>((eventHandler) => (event) => {
