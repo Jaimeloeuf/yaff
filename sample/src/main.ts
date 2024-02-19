@@ -33,6 +33,12 @@ function main() {
         return notFound(state, rerender);
       }
     },
+
+    [
+      function reRenderOnRouteChange(_, rerender) {
+        window.addEventListener("popstate", () => rerender());
+      },
+    ],
   );
 }
 

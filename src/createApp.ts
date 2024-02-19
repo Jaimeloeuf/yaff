@@ -13,8 +13,19 @@ export class Yaff<State> {
     private readonly rootComponent: (
       state: State,
       rerender: (newState?: State) => void
-    ) => VNode
+    ) => VNode,
+
+    plugins?: Array<
+      (state: State, rerender: (newState?: State) => void) => void
+    >
   ) {
+    // Initialise all the plugins
+    if (plugins !== undefined) {
+      for (const plugin of plugins) {
+        plugin(state, this.rerender.bind(this));
+      }
+    }
+
     this.mount = mountFF<State>((eventHandler) => (event) => {
       const newState = eventHandler(this.state, event);
 
