@@ -35,15 +35,15 @@ function main() {
       }
     },
 
-    [
-      function reRenderOnRouteChange(_, rerender) {
-        window.addEventListener("popstate", () => rerender());
-      },
+    {
+      plugins: [
+        function reRenderOnRouteChange(_, rerender) {
+          window.addEventListener("popstate", () => rerender());
+        },
+      ],
 
-      // Using bind to create the plugin function that returns the state change
-      // hook function with the argument already set.
-      Store.createSave.bind(Store, ["todos"]),
-    ],
+      stateChangeHooks: [Store.createSave(["todos"])],
+    },
   );
 }
 

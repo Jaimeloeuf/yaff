@@ -24,15 +24,26 @@ export class Yaff<State> {
       state: State,
       rerender: (newState?: State) => void
     ) => VNode,
-    plugins?: Array<Plugin<State>>
+    options?: {
+      plugins?: Array<Plugin<State>>;
+      stateChangeHooks?: Array<StateChangeHookFn<State>>;
+    }
   ) {
     // Initialise all plugins, and save any stateChangeHooks returned.
-    if (plugins !== undefined) {
-      this.stateChangeHooks = plugins
+    if (options?.plugins !== undefined) {
+      this.stateChangeHooks = options.plugins
         .map((plugin) => plugin(state, this.rerender.bind(this)))
         .filter((stateChangeHook) => stateChangeHook !== undefined) as Array<
         StateChangeHookFn<State>
       >;
+    }
+
+    // Merge in any directly set stateChangeHooks onto the instance state change
+    // hook functions array after any from the plugins (this take priority).
+    if (options?.stateChangeHooks !== undefined) {
+      this.stateChangeHooks = this.stateChangeHooks.concat(
+        options.stateChangeHooks
+      );
     }
 
     this.mount = mountFF<State>((eventHandler) => (event) => {
