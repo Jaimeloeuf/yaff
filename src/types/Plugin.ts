@@ -8,7 +8,7 @@ export type StateChangeHookFn<State> = (state: State) => State | void;
  * Plugins are functions that are runs on startup, and can optionally return a
  * `StateChangeHookFn` after initialising.
  */
-export type Plugin<State> = (
-  state: State,
-  rerender: (newState?: State) => void
-) => StateChangeHookFn<State> | void;
+export type Plugin<State> = (context: {
+  state: State;
+  rerender: (newState?: State) => void;
+}) => StateChangeHookFn<State> | void;

@@ -37,7 +37,7 @@ function main() {
 
     {
       plugins: [
-        function reRenderOnRouteChange(_, rerender) {
+        function reRenderOnRouteChange({ rerender }) {
           window.addEventListener("popstate", () => rerender());
         },
       ],

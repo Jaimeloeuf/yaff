@@ -32,7 +32,7 @@ export class Yaff<State> {
     // Initialise all plugins, and save any stateChangeHooks returned.
     if (options?.plugins !== undefined) {
       this.stateChangeHooks = options.plugins
-        .map((plugin) => plugin(state, this.rerender.bind(this)))
+        .map((plugin) => plugin({ state, rerender: this.rerender.bind(this) }))
         .filter((stateChangeHook) => stateChangeHook !== undefined) as Array<
         StateChangeHookFn<State>
       >;
