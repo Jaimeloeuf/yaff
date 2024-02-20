@@ -40,7 +40,9 @@ function main() {
         window.addEventListener("popstate", () => rerender());
       },
 
-      Store.plugin,
+      // Using bind to create the plugin function that returns the state change
+      // hook function with the argument already set.
+      Store.createSave.bind(Store, ["todos"]),
     ],
   );
 }
