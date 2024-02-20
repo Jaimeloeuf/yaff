@@ -1,4 +1,5 @@
 import { yaff } from "../../dist";
+import { Store } from "./store";
 import { todo } from "./todo";
 import { about } from "./about";
 import { notFound } from "./notFound";
@@ -17,10 +18,10 @@ function main() {
   yaff<State>(
     appRootElement,
 
-    {
+    Store.init({
       newTodo: "",
       todos: [],
-    },
+    }),
 
     function (state, rerender) {
       console.log("App state", state);
@@ -38,6 +39,8 @@ function main() {
       function reRenderOnRouteChange(_, rerender) {
         window.addEventListener("popstate", () => rerender());
       },
+
+      Store.plugin,
     ],
   );
 }
