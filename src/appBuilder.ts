@@ -40,7 +40,7 @@ export class yaff<State extends AppGlobalState> {
    * Set plugins that will run before initial app start.
    *
    * Plugins are functions that are runs on startup, and can optionally return a
-   * `StateChangeHookFn` after initialising.
+   * `StateChangeHook` after initialising.
    *
    * Returns this to chain method calls using the builder pattern.
    */

@@ -1,3 +1,5 @@
+import type { AppGlobalState } from "../types/index";
+
 export class Store {
   static storeKey = "__yaff_store";
 
@@ -18,10 +20,10 @@ export class Store {
   }
 
   /**
-   * Factory function to create a `StateChangeHookFn` to save state (only the
+   * Factory function to create a `StateChangeHook` to save state (only the
    * properties as specified in `pathToCache` array if given) to localStorage.
    */
-  static createSave<State>(pathToCache?: Array<string>) {
+  static createSave<State extends AppGlobalState>(pathToCache?: Array<string>) {
     return pathToCache === undefined
       ? (state: State) =>
           localStorage.setItem(Store.storeKey, JSON.stringify(state))
@@ -32,8 +34,8 @@ export class Store {
               pathToCache.reduce((stateToCache, path) => {
                 stateToCache[path] = state[path];
                 return stateToCache;
-              }, {}),
-            ),
+              }, {} as Record<string, unknown>)
+            )
           );
   }
 }

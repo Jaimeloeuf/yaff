@@ -1,5 +1,4 @@
-import { yaff, stateChangeDebugger } from "../../dist";
-import { Store } from "./store";
+import { yaff, Store, debugPlugin, reRenderOnRouteChange } from "../../dist";
 import { App } from "./views/App";
 import type { State } from "./State";
 
@@ -21,10 +20,8 @@ function main() {
       }),
     )
     .useRootComponent(App)
-    .usePlugins(function reRenderOnRouteChange({ reRender }) {
-      window.addEventListener("popstate", () => reRender());
-    })
-    .useStateChangeHooks(stateChangeDebugger, Store.createSave(["todos"]))
+    .usePlugins(debugPlugin, reRenderOnRouteChange)
+    .useStateChangeHooks(Store.createSave(["todos"]))
     .create(appRootElement);
 }
 
