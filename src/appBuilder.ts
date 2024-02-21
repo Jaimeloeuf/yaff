@@ -2,8 +2,9 @@ import { App } from "./App";
 import type {
   AppGlobalState,
   Component,
-  StateChangeHookFn,
   Plugin,
+  StateChangeHook,
+  PreRenderHook,
 } from "./types/index";
 
 /**
@@ -22,7 +23,8 @@ export class yaff<State extends AppGlobalState> {
 
   private rootComponent?: Component<State>;
   private plugins?: Array<Plugin<State>>;
-  private stateChangeHooks?: Array<StateChangeHookFn<State>>;
+  private stateChangeHooks?: Array<StateChangeHook<State>>;
+  private preRenderHooks?: Array<PreRenderHook<State>>;
 
   constructor(private readonly state: State) {}
 
@@ -39,8 +41,8 @@ export class yaff<State extends AppGlobalState> {
   /**
    * Set plugins that will run before initial app start.
    *
-   * Plugins are functions that are runs on startup, and can optionally return a
-   * `StateChangeHook` after initialising.
+   * Plugins are functions that are runs on startup, and can optionally return
+   * `PluginHooks` after initialising.
    *
    * Returns this to chain method calls using the builder pattern.
    */
@@ -60,8 +62,22 @@ export class yaff<State extends AppGlobalState> {
    *
    * Returns this to chain method calls using the builder pattern.
    */
-  useStateChangeHooks(...stateChangeHooks: Array<StateChangeHookFn<State>>) {
+  useStateChangeHooks(...stateChangeHooks: Array<StateChangeHook<State>>) {
     this.stateChangeHooks = stateChangeHooks;
+    return this;
+  }
+
+  /**
+   * Pre-render change hooks are functions that will be called before every
+   * single UI rendering in the order that they were set.
+   *
+   * Note that preRenderHooks set here will run after preRenderHooks returned
+   * from plugins.
+   *
+   * Returns this to chain method calls using the builder pattern.
+   */
+  usePreRenderHooks(...preRenderHooks: Array<StateChangeHook<State>>) {
+    this.preRenderHooks = preRenderHooks;
     return this;
   }
 
@@ -81,7 +97,8 @@ export class yaff<State extends AppGlobalState> {
       this.state,
       this.rootComponent,
       this.plugins,
-      this.stateChangeHooks
+      this.stateChangeHooks,
+      this.preRenderHooks
     );
   }
 }

@@ -4,7 +4,9 @@ import type {
   AppGlobalState,
   VNode,
   Component,
-  StateChangeHookFn,
+  StateChangeHook,
+  PreRenderHook,
+  PluginHooks,
   Plugin,
   AppContext,
 } from "./types/index";
@@ -26,14 +28,24 @@ export class App<State extends AppGlobalState> {
    *
    * Note that `stateChangeHooks` runs before re-rendering happens.
    */
-  private stateChangeHooks: Array<StateChangeHookFn<State>> = [];
+  private stateChangeHooks: Array<StateChangeHook<State>> = [];
+
+  /**
+   * Pre-render hooks will be called before every single rendering in the order
+   * that they were set.
+   *
+   * Note that `PreRenderHooks` runs right before re-rendering happens and after
+   * all `stateChangeHooks` have ran.
+   */
+  private preRenderHooks: Array<PreRenderHook<State>> = [];
 
   constructor(
     container: HTMLElement,
     private state: State,
     private readonly rootComponent: Component<State>,
     plugins: undefined | Array<Plugin<State>>,
-    stateChangeHooks: undefined | Array<StateChangeHookFn<State>>
+    stateChangeHooks: undefined | Array<StateChangeHook<State>>,
+    preRenderHooks: undefined | Array<PreRenderHook<State>>
   ) {
     // Create the initial appContext to use in the constructor.
     this.appContext = {
@@ -42,19 +54,32 @@ export class App<State extends AppGlobalState> {
       reRender: this.reRender.bind(this),
     };
 
-    // Initialise all plugins, and save any stateChangeHooks returned.
+    // Initialise all plugins, and save any hooks returned.
     if (plugins !== undefined) {
-      this.stateChangeHooks = plugins
+      const pluginHooks = plugins
         .map((plugin) => plugin(this.appContext))
-        .filter((stateChangeHook) => stateChangeHook !== undefined) as Array<
-        StateChangeHookFn<State>
-      >;
+        .filter((hooks) => hooks !== undefined) as Array<PluginHooks<State>>;
+
+      for (const pluginHook of pluginHooks) {
+        if (pluginHook.stateChangeHooks !== undefined) {
+          this.stateChangeHooks.push(...pluginHook.stateChangeHooks);
+        }
+        if (pluginHook.preRenderHooks !== undefined) {
+          this.preRenderHooks.push(...pluginHook.preRenderHooks);
+        }
+      }
     }
 
     // Merge in any directly set stateChangeHooks onto the instance state change
     // hook functions array after any from the plugins (this take priority).
     if (stateChangeHooks !== undefined) {
-      this.stateChangeHooks = this.stateChangeHooks.concat(stateChangeHooks);
+      this.stateChangeHooks.push(...stateChangeHooks);
+    }
+
+    // Merge in any directly set preRenderHooks onto the instance pre render
+    // hook functions array after any from the plugins (this take priority).
+    if (preRenderHooks !== undefined) {
+      this.preRenderHooks.push(...preRenderHooks);
     }
 
     this.mount = mountFF<State>((eventHandler) => (event) => {
@@ -70,6 +95,8 @@ export class App<State extends AppGlobalState> {
     // Run state change hooks before initial render as state changed from
     // 'nothing' to the default global app state.
     this.runStateChangeHooks();
+
+    this.runPreRenderHooks();
 
     this.currentVNode = rootComponent(this.appContext);
     this.mount(this.currentVNode, container);
@@ -97,9 +124,21 @@ export class App<State extends AppGlobalState> {
   }
 
   /**
+   * Run all preRenderHook functions to let them know that rendering is about to
+   * happen.
+   */
+  private runPreRenderHooks() {
+    for (const preRenderHook of this.preRenderHooks) {
+      preRenderHook(this.state);
+    }
+  }
+
+  /**
    * Re-render UI after using the root component.
    */
   private reRender() {
+    this.runPreRenderHooks();
+
     const newVNode = this.rootComponent(this.createAppContext());
     this.patch(this.currentVNode, newVNode);
     this.currentVNode = newVNode;
