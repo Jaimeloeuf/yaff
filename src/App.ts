@@ -10,6 +10,11 @@ import type {
 } from "./types/index";
 
 export class App<State extends AppGlobalState> {
+  /**
+   * The current app's AppContext<State>
+   */
+  private appContext: AppContext<State>;
+
   private currentVNode: VNode;
   private mount: (vnode: VNode, container: HTMLElement | ParentNode) => void;
   private patch: (originalVNode: VNode, newVNode: VNode) => void;
@@ -30,10 +35,17 @@ export class App<State extends AppGlobalState> {
     plugins: undefined | Array<Plugin<State>>,
     stateChangeHooks: undefined | Array<StateChangeHookFn<State>>
   ) {
+    // Create the initial appContext to use in the constructor.
+    this.appContext = {
+      state: this.state,
+      updateState: this.updateState.bind(this),
+      reRender: this.reRender.bind(this),
+    };
+
     // Initialise all plugins, and save any stateChangeHooks returned.
     if (plugins !== undefined) {
       this.stateChangeHooks = plugins
-        .map((plugin) => plugin(this.createAppContext()))
+        .map((plugin) => plugin(this.appContext))
         .filter((stateChangeHook) => stateChangeHook !== undefined) as Array<
         StateChangeHookFn<State>
       >;
@@ -59,19 +71,18 @@ export class App<State extends AppGlobalState> {
     // 'nothing' to the default global app state.
     this.runStateChangeHooks();
 
-    this.currentVNode = rootComponent(this.createAppContext());
+    this.currentVNode = rootComponent(this.appContext);
     this.mount(this.currentVNode, container);
   }
 
   /**
-   * Creates the current AppContext<State>
+   * Creates AppContext<State> by re-using the original appContext and only
+   * updating the reference to state since only that changes instead of re-
+   * creating the whole AppContext object every single time.
    */
   private createAppContext(): AppContext<State> {
-    return {
-      state: this.state,
-      updateState: this.updateState.bind(this),
-      reRender: this.reRender.bind(this),
-    };
+    this.appContext.state = this.state;
+    return this.appContext;
   }
 
   /**
