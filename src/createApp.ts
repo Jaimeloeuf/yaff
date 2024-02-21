@@ -1,9 +1,14 @@
 import { mountFF } from "./mount";
 import { patchFF } from "./patch";
-import type { VNode } from "./VNode";
-import type { StateChangeHookFn, Plugin } from "./types/Plugin";
+import type {
+  AppGlobalState,
+  VNode,
+  Component,
+  StateChangeHookFn,
+  Plugin,
+} from "./types/index";
 
-export class Yaff<State> {
+export class Yaff<State extends AppGlobalState> {
   private currentVNode: VNode;
   private mount: (vnode: VNode, container: HTMLElement | ParentNode) => void;
   private patch: (originalVNode: VNode, newVNode: VNode) => void;
@@ -20,10 +25,7 @@ export class Yaff<State> {
   constructor(
     container: HTMLElement,
     private state: State,
-    private readonly rootComponent: (
-      state: State,
-      rerender: (newState?: State) => void
-    ) => VNode,
+    private readonly rootComponent: Component<State>,
     options?: {
       plugins?: Array<Plugin<State>>;
       stateChangeHooks?: Array<StateChangeHookFn<State>>;
@@ -87,6 +89,6 @@ export class Yaff<State> {
  * Create a new app to mount. This is basically a wrapper around the `Yaff`
  * constructor, where args are inferred from `Yaff.constructor` type.
  */
-export const yaff = <State>(
+export const yaff = <State extends AppGlobalState>(
   ...args: ConstructorParameters<typeof Yaff<State>>
 ) => new Yaff<State>(...args);

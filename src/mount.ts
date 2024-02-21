@@ -1,5 +1,4 @@
-import type { VNode } from "./VNode";
-import type { EventListenerStateTransformer } from "./types/EventListener";
+import type { VNode, EventListenerStateTransformer } from "./types/index";
 
 /**
  * Factory function to create a new `mount` instance with the

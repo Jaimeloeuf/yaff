@@ -1,6 +1,9 @@
-import type { VNode, VNodes } from "./VNode";
-import type { HTMLTags } from "./types/HTMLTags";
-import type { EventListenerStateTransformer } from "./types/EventListener";
+import type {
+  VNode,
+  VNodes,
+  HTMLTags,
+  EventListenerStateTransformer,
+} from "./types/index";
 
 export class f {
   /**

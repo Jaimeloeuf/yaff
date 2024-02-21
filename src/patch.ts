@@ -1,6 +1,6 @@
 import { unmount } from "./unmount";
 import { patchAttributes } from "./patchAttributes";
-import type { VNode } from "./VNode";
+import type { VNode } from "./types/index";
 
 /**
  * Factory function to create a new `patch` instance with the `mount` function

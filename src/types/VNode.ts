@@ -1,5 +1,5 @@
-import type { HTMLTags } from "./types/HTMLTags";
-import type { EventListenerStateTransformer } from "./types/EventListener";
+import type { HTMLTags } from "./HTMLTags";
+import type { EventListenerStateTransformer } from "./EventListener";
 
 export type VNode = {
   tag: HTMLTags;
