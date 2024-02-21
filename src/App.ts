@@ -54,8 +54,23 @@ export class App<State extends AppGlobalState> {
     });
     this.patch = patchFF(this.mount);
 
+    // Run state change hooks before initial render as state changed from
+    // 'nothing' to the default global app state.
+    this.runStateChangeHooks();
+
     this.currentVNode = rootComponent(this.state, this.rerender.bind(this));
     this.mount(this.currentVNode, container);
+  }
+
+  /**
+   * Run all stateChangeHook functions to let them know that state is updated,
+   * and optionally use the transformed state if any as the new state.
+   */
+  private runStateChangeHooks() {
+    this.state = this.stateChangeHooks.reduce(
+      (state, stateChangeHook) => stateChangeHook(state) ?? state,
+      this.state
+    );
   }
 
   /**
@@ -68,12 +83,8 @@ export class App<State extends AppGlobalState> {
       this.state = newState;
     }
 
-    // Run all stateChangeHook functions to let them know that state is updated,
-    // and optionally use the transformed state if any as the new state.
-    this.state = this.stateChangeHooks.reduce(
-      (state, stateChangeHook) => stateChangeHook(state) ?? state,
-      this.state
-    );
+    // Run all state change hooks before re-render since this can change state.
+    this.runStateChangeHooks();
 
     const newVNode = this.rootComponent(this.state, this.rerender.bind(this));
     this.patch(this.currentVNode, newVNode);

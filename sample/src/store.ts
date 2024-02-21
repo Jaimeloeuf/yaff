@@ -3,20 +3,18 @@ export class Store {
 
   /**
    * Initialise the store and returns the initial global state by hydrating from
-   * localStorage. If no previously stored global state, store and return
-   * defaultInitialState as the initial global state.
+   * localStorage. If no stored global state found, use `defaultInitialState`
+   * as the initial global state.
    */
   static init<State>(defaultInitialState: State): State {
     const state = localStorage.getItem(Store.storeKey);
-    if (state === null) {
-      localStorage.setItem(Store.storeKey, JSON.stringify(defaultInitialState));
-      return defaultInitialState;
-    }
 
-    // Since state can be partially stored using `pathToCache`, there could be
-    // missing properties on the state object, which will be set using the
-    // default initialState provided.
-    return { ...defaultInitialState, ...JSON.parse(state) };
+    return state === null
+      ? defaultInitialState
+      : // Since state can be partially stored using `pathToCache`, there could
+        // be missing properties on the state object, which will be set using
+        // the default initialState provided.
+        { ...defaultInitialState, ...JSON.parse(state) };
   }
 
   /**
