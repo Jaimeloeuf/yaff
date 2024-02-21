@@ -2,6 +2,7 @@
  * Barrel file.
  */
 
+export * from "./AppContext";
 export * from "./AppGlobalState";
 export * from "./Component";
 export * from "./EventListener";

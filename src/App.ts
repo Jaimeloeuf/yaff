@@ -6,6 +6,7 @@ import type {
   Component,
   StateChangeHookFn,
   Plugin,
+  AppContext,
 } from "./types/index";
 
 export class App<State extends AppGlobalState> {
@@ -32,7 +33,7 @@ export class App<State extends AppGlobalState> {
     // Initialise all plugins, and save any stateChangeHooks returned.
     if (plugins !== undefined) {
       this.stateChangeHooks = plugins
-        .map((plugin) => plugin({ state, rerender: this.rerender.bind(this) }))
+        .map((plugin) => plugin(this.createAppContext()))
         .filter((stateChangeHook) => stateChangeHook !== undefined) as Array<
         StateChangeHookFn<State>
       >;
@@ -49,7 +50,7 @@ export class App<State extends AppGlobalState> {
 
       // Only re-render if Event Listener transforms and returns new state.
       if (newState !== undefined) {
-        this.rerender(newState);
+        this.updateState(newState);
       }
     });
     this.patch = patchFF(this.mount);
@@ -58,8 +59,19 @@ export class App<State extends AppGlobalState> {
     // 'nothing' to the default global app state.
     this.runStateChangeHooks();
 
-    this.currentVNode = rootComponent(this.state, this.rerender.bind(this));
+    this.currentVNode = rootComponent(this.createAppContext());
     this.mount(this.currentVNode, container);
+  }
+
+  /**
+   * Creates the current AppContext<State>
+   */
+  private createAppContext(): AppContext<State> {
+    return {
+      state: this.state,
+      updateState: this.updateState.bind(this),
+      reRender: this.reRender.bind(this),
+    };
   }
 
   /**
@@ -74,20 +86,20 @@ export class App<State extends AppGlobalState> {
   }
 
   /**
-   * Re-render UI after optionally updating local state. UI can be re-rendered
-   * even if state did not change since UI can rely on externally managed state
-   * like window.location.
+   * Re-render UI after using the root component.
    */
-  private rerender(newState?: State) {
-    if (newState !== undefined) {
-      this.state = newState;
-    }
-
-    // Run all state change hooks before re-render since this can change state.
-    this.runStateChangeHooks();
-
-    const newVNode = this.rootComponent(this.state, this.rerender.bind(this));
+  private reRender() {
+    const newVNode = this.rootComponent(this.createAppContext());
     this.patch(this.currentVNode, newVNode);
     this.currentVNode = newVNode;
+  }
+
+  /**
+   * Update state, run all stateChangeHooks and re-render UI.
+   */
+  private updateState(newState: State) {
+    this.state = newState;
+    this.runStateChangeHooks();
+    this.reRender();
   }
 }

@@ -21,8 +21,8 @@ function main() {
       }),
     )
     .useRootComponent(App)
-    .usePlugins(function reRenderOnRouteChange({ rerender }) {
-      window.addEventListener("popstate", () => rerender());
+    .usePlugins(function reRenderOnRouteChange({ reRender }) {
+      window.addEventListener("popstate", () => reRender());
     })
     .useStateChangeHooks(stateChangeDebugger, Store.createSave(["todos"]))
     .create(appRootElement);

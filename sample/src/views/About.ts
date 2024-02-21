@@ -1,7 +1,7 @@
-import { f } from "../../../dist";
+import { AppContext, f } from "../../../dist";
 import type { State } from "../State";
 
-export function About(state: State, rerender) {
+export function About({ reRender }: AppContext<State>) {
   return f.div
     .class("h-dvh flex flex-col items-center justify-center p-12")
     .child([
@@ -24,7 +24,7 @@ export function About(state: State, rerender) {
         )
         .event("click", () => {
           window.history.pushState({}, "", "/");
-          rerender();
+          reRender();
         })
         .child("Back to Home"),
     ]);

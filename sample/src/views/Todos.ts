@@ -1,4 +1,4 @@
-import { f } from "../../../dist";
+import { AppContext, f } from "../../../dist";
 import type { State } from "../State";
 
 /**
@@ -17,7 +17,7 @@ function addTodo(state: State) {
   };
 }
 
-export function Todos(state: State, rerender) {
+export function Todos({ state, reRender }: AppContext<State>) {
   return f
     .create("div")
     .class("mx-auto max-w-screen-sm p-6")
@@ -39,7 +39,7 @@ export function Todos(state: State, rerender) {
           )
           .event("click", () => {
             window.history.pushState({}, "", "/about");
-            rerender();
+            reRender();
           })
           .child("about"),
       ]),

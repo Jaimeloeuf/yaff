@@ -1,7 +1,7 @@
-import { f } from "../../../dist";
+import { AppContext, f } from "../../../dist";
 import type { State } from "../State";
 
-export function NotFound(state: State, rerender) {
+export function NotFound({ reRender }: AppContext<State>) {
   return f.div
     .class("h-dvh flex flex-col items-center justify-center p-12")
     .child([
@@ -10,7 +10,7 @@ export function NotFound(state: State, rerender) {
         .class("pt-8 underline underline-offset-4 text-zinc-500")
         .event("click", () => {
           window.history.pushState({}, "", "/");
-          rerender();
+          reRender();
         })
         .child("Back to Home"),
     ]);
