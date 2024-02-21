@@ -1,8 +1,6 @@
 import { yaff } from "../../dist";
 import { Store } from "./store";
-import { todo } from "./todo";
-import { about } from "./about";
-import { notFound } from "./notFound";
+import { App } from "./views/App";
 import type { State } from "./State";
 
 /**
@@ -23,17 +21,7 @@ function main() {
       todos: [],
     }),
 
-    function (state, rerender) {
-      console.log("App state", state);
-
-      if (window.location.pathname === "/") {
-        return todo(state, rerender);
-      } else if (window.location.pathname === "/about") {
-        return about(state, rerender);
-      } else {
-        return notFound(state, rerender);
-      }
-    },
+    App,
 
     {
       plugins: [

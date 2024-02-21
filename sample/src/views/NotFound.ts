@@ -1,7 +1,7 @@
-import { f } from "../../dist";
-import type { State } from "./State";
+import { f } from "../../../dist";
+import type { State } from "../State";
 
-export function notFound(state: State, rerender) {
+export function NotFound(state: State, rerender) {
   return f.div
     .class("h-dvh flex flex-col items-center justify-center p-12")
     .child([

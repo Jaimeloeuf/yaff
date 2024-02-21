@@ -1,5 +1,5 @@
-import { f } from "../../dist";
-import type { State } from "./State";
+import { f } from "../../../dist";
+import type { State } from "../State";
 
 /**
  * Function that transform the state by saving the draft todo as a new one.
@@ -17,7 +17,7 @@ function addTodo(state: State) {
   };
 }
 
-export function todo(state: State, rerender) {
+export function Todos(state: State, rerender) {
   return f
     .create("div")
     .class("mx-auto max-w-screen-sm p-6")
@@ -91,7 +91,7 @@ export function todo(state: State, rerender) {
                   .class("group cursor-pointer p-1 rounded-lg odd:bg-zinc-50")
                   .child(
                     f.div
-                      .class("flex flex-row items-center justify-between")
+                      .class("flex flex-row items-start justify-between")
                       .child([
                         f.p.class("text-zinc-900 font-extralight").child(todo),
                         f.div
