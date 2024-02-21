@@ -4,5 +4,5 @@
 
 export type * from "./types/index";
 
-export * from "./createApp";
+export * from "./appBuilder";
 export * from "./f";

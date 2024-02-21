@@ -13,26 +13,19 @@ function main() {
     throw new Error("App root element 'app' does not exist");
   }
 
-  yaff<State>(
-    appRootElement,
-
-    Store.init({
-      newTodo: "",
-      todos: [],
-    }),
-
-    App,
-
-    {
-      plugins: [
-        function reRenderOnRouteChange({ rerender }) {
-          window.addEventListener("popstate", () => rerender());
-        },
-      ],
-
-      stateChangeHooks: [Store.createSave(["todos"])],
-    },
-  );
+  yaff
+    .appState(
+      Store.init({
+        newTodo: "",
+        todos: [],
+      }),
+    )
+    .useRootComponent(App)
+    .usePlugins(function reRenderOnRouteChange({ rerender }) {
+      window.addEventListener("popstate", () => rerender());
+    })
+    .useStateChangeHooks(Store.createSave(["todos"]))
+    .create(appRootElement);
 }
 
 main();

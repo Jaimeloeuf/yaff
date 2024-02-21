@@ -8,7 +8,7 @@ import type {
   Plugin,
 } from "./types/index";
 
-export class Yaff<State extends AppGlobalState> {
+export class App<State extends AppGlobalState> {
   private currentVNode: VNode;
   private mount: (vnode: VNode, container: HTMLElement | ParentNode) => void;
   private patch: (originalVNode: VNode, newVNode: VNode) => void;
@@ -26,14 +26,12 @@ export class Yaff<State extends AppGlobalState> {
     container: HTMLElement,
     private state: State,
     private readonly rootComponent: Component<State>,
-    options?: {
-      plugins?: Array<Plugin<State>>;
-      stateChangeHooks?: Array<StateChangeHookFn<State>>;
-    }
+    plugins: undefined | Array<Plugin<State>>,
+    stateChangeHooks: undefined | Array<StateChangeHookFn<State>>
   ) {
     // Initialise all plugins, and save any stateChangeHooks returned.
-    if (options?.plugins !== undefined) {
-      this.stateChangeHooks = options.plugins
+    if (plugins !== undefined) {
+      this.stateChangeHooks = plugins
         .map((plugin) => plugin({ state, rerender: this.rerender.bind(this) }))
         .filter((stateChangeHook) => stateChangeHook !== undefined) as Array<
         StateChangeHookFn<State>
@@ -42,10 +40,8 @@ export class Yaff<State extends AppGlobalState> {
 
     // Merge in any directly set stateChangeHooks onto the instance state change
     // hook functions array after any from the plugins (this take priority).
-    if (options?.stateChangeHooks !== undefined) {
-      this.stateChangeHooks = this.stateChangeHooks.concat(
-        options.stateChangeHooks
-      );
+    if (stateChangeHooks !== undefined) {
+      this.stateChangeHooks = this.stateChangeHooks.concat(stateChangeHooks);
     }
 
     this.mount = mountFF<State>((eventHandler) => (event) => {
@@ -58,7 +54,7 @@ export class Yaff<State extends AppGlobalState> {
     });
     this.patch = patchFF(this.mount);
 
-    this.currentVNode = rootComponent(state, this.rerender.bind(this));
+    this.currentVNode = rootComponent(this.state, this.rerender.bind(this));
     this.mount(this.currentVNode, container);
   }
 
@@ -84,11 +80,3 @@ export class Yaff<State extends AppGlobalState> {
     this.currentVNode = newVNode;
   }
 }
-
-/**
- * Create a new app to mount. This is basically a wrapper around the `Yaff`
- * constructor, where args are inferred from `Yaff.constructor` type.
- */
-export const yaff = <State extends AppGlobalState>(
-  ...args: ConstructorParameters<typeof Yaff<State>>
-) => new Yaff<State>(...args);
