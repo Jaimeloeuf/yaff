@@ -1,5 +1,5 @@
 import type { HTMLTags } from "./HTMLTags";
-import type { EventListenerStateTransformer } from "./EventListener";
+import type { EventHandler } from "./EventHandler";
 
 export type VNode = {
   tag: HTMLTags;
@@ -23,9 +23,9 @@ export type VNode = {
   /**
    * Mapping of events from the `el` DOM node that will be listened to
    *
-   * Type of `Record<eventName, eventListenerStateTransformer>`
+   * Type of `Record<eventName, eventHandler>`
    */
-  event?: Record<string, EventListenerStateTransformer>;
+  event?: Record<string, EventHandler>;
 };
 
 /**

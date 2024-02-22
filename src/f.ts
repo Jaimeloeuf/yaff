@@ -2,7 +2,7 @@ import type {
   VNode,
   VNodes,
   HTMLTags,
-  EventListenerStateTransformer,
+  EventHandler,
   AppGlobalState,
 } from "./types/index";
 
@@ -412,7 +412,7 @@ export class f {
    */
   event<State extends AppGlobalState = any>(
     eventName: string,
-    eventHandler: EventListenerStateTransformer<State>
+    eventHandler: EventHandler<State>
   ) {
     if (this._event === undefined) {
       this._event = {};

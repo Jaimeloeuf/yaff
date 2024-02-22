@@ -1,7 +1,7 @@
-import { AppContext, f } from "../../../dist";
+import { f, EventContext } from "../../../dist";
 import type { State } from "../State";
 
-export function About({ reRender }: AppContext<State>) {
+export function About() {
   return f.div
     .class("h-dvh flex flex-col items-center justify-center p-12")
     .child([
@@ -22,7 +22,7 @@ export function About({ reRender }: AppContext<State>) {
         .class(
           "pt-12 underline underline-offset-4 decoration-zinc-300 text-zinc-500",
         )
-        .event("click", () => {
+        .event("click", ({ reRender }: EventContext<State>) => {
           window.history.pushState({}, "", "/");
           reRender();
         })

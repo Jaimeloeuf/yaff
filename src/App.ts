@@ -82,14 +82,11 @@ export class App<State extends AppGlobalState = any> {
       this.preRenderHooks.push(...preRenderHooks);
     }
 
-    this.mount = mountFF<State>((eventHandler) => (event) => {
-      const newState = eventHandler(this.state, event);
+    this.mount = mountFF<State>(
+      (eventHandler) => (event) =>
+        eventHandler({ event, ...this.createAppContext() })
+    );
 
-      // Only re-render if Event Listener transforms and returns new state.
-      if (newState !== undefined) {
-        this.updateState(newState);
-      }
-    });
     this.patch = patchFF(this.mount);
 
     // Run state change hooks before initial render as state changed from

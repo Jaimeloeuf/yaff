@@ -1,8 +1,4 @@
-import type {
-  AppGlobalState,
-  VNode,
-  EventListenerStateTransformer,
-} from "./types/index";
+import type { AppGlobalState, VNode, EventHandler } from "./types/index";
 
 /**
  * Factory function to create a new `mount` instance with the
@@ -14,7 +10,7 @@ import type {
  */
 export const mountFF = <State extends AppGlobalState = any>(
   eventHandlerWrapper: (
-    eventHandler: EventListenerStateTransformer<State>
+    eventHandler: EventHandler<State>
   ) => (event: Event) => void
 ) =>
   /**

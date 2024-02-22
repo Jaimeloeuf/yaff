@@ -1,20 +1,25 @@
-import { AppContext, f } from "../../../dist";
+import { AppContext, EventContext, f } from "../../../dist";
 import type { State } from "../State";
 
-/**
- * Function that transform the state by saving the draft todo as a new one.
- */
-function addTodo(state: State) {
+function addTodo({ state, updateState }: EventContext<State>) {
   if (state.newTodo === "") {
     alert("Please enter a valid todo");
     return;
   }
 
-  return {
+  updateState({
     ...state,
     newTodo: "",
     todos: [state.newTodo, ...state.todos],
-  };
+  });
+}
+
+function removeTodo(
+  index: number,
+  { state, updateState }: EventContext<State>,
+) {
+  state.todos.splice(index, 1);
+  updateState(state);
 }
 
 export function Todos({ state, reRender }: AppContext<State>) {
@@ -52,13 +57,15 @@ export function Todos({ state, reRender }: AppContext<State>) {
             placeholder: "Add a new todo here...",
             value: state.newTodo,
           })
-          .event("input", (state: State, event) => ({
-            ...state,
-            newTodo: (event.target as HTMLInputElement).value,
-          }))
-          .event("keydown", (state: State, event) => {
-            if ((event as KeyboardEvent).key === "Enter") {
-              return addTodo(state);
+          .event("input", ({ state, event, updateState }) =>
+            updateState({
+              ...state,
+              newTodo: (event.target as HTMLInputElement).value,
+            }),
+          )
+          .event("keydown", (context: EventContext<State>) => {
+            if ((context.event as KeyboardEvent).key === "Enter") {
+              addTodo(context);
             }
           })
           .create(),
@@ -103,10 +110,7 @@ export function Todos({ state, reRender }: AppContext<State>) {
                               .class(
                                 "text-zinc-400 group-hover:text-red-400 select-none",
                               )
-                              .event("click", (state: State) => {
-                                state.todos.splice(index, 1);
-                                return state;
-                              })
+                              .event("click", (ctx) => removeTodo(index, ctx))
                               .child("X"),
                           ),
                       ]),
