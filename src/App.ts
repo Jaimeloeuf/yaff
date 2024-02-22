@@ -143,9 +143,13 @@ export class App<State extends AppGlobalState = any> {
 
   /**
    * Update state, run all stateChangeHooks and re-render UI.
+   *
+   * Users can pass in only parts of the `State` that they want to update, as
+   * this will help to perform the spread operation for them to fill in the
+   * missing State properties from the original value.
    */
-  private updateState(newState: State) {
-    this.state = newState;
+  private updateState(newState: Partial<State>) {
+    this.state = { ...this.state, ...newState };
     this.runStateChangeHooks();
     this.reRender();
   }

@@ -8,7 +8,6 @@ function addTodo({ state, updateState }: EventContext<State>) {
   }
 
   updateState({
-    ...state,
     newTodo: "",
     todos: [state.newTodo, ...state.todos],
   });
@@ -57,9 +56,8 @@ export function Todos({ state, reRender }: AppContext<State>) {
             placeholder: "Add a new todo here...",
             value: state.newTodo,
           })
-          .event("input", ({ state, event, updateState }) =>
+          .event("input", ({ event, updateState }) =>
             updateState({
-              ...state,
               newTodo: (event.target as HTMLInputElement).value,
             }),
           )

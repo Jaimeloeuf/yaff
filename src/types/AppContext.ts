@@ -16,7 +16,7 @@ export interface AppContext<State extends AppGlobalState = any> {
    * Call this function to update the global app state and trigger a re-render
    * using the new state.
    */
-  updateState: (state: State) => void;
+  updateState: (state: Partial<State>) => void;
 
   /**
    * Call this function to trigger a reRender
