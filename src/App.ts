@@ -11,7 +11,7 @@ import type {
   AppContext,
 } from "./types/index";
 
-export class App<State extends AppGlobalState> {
+export class App<State extends AppGlobalState = any> {
   /**
    * The current app's AppContext<State>
    */

@@ -11,11 +11,11 @@ import type {
  * `yaff` uses the builder pattern to get all the app options/properties from
  * user before creating an instance of `App` to make it more ergonomic to use.
  */
-export class yaff<State extends AppGlobalState> {
+export class yaff<State extends AppGlobalState = any> {
   /**
    * Start the builder process by setting the default global app state.
    */
-  static appState<State extends AppGlobalState>(
+  static appState<State extends AppGlobalState = any>(
     ...args: ConstructorParameters<typeof yaff<State>>
   ) {
     return new yaff<State>(...args);

@@ -3,6 +3,7 @@ import type {
   VNodes,
   HTMLTags,
   EventListenerStateTransformer,
+  AppGlobalState,
 } from "./types/index";
 
 export class f {
@@ -409,7 +410,7 @@ export class f {
   /**
    * Returns `this` to make this method chainable.
    */
-  event<State>(
+  event<State extends AppGlobalState = any>(
     eventName: string,
     eventHandler: EventListenerStateTransformer<State>
   ) {

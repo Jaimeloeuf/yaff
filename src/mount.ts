@@ -1,4 +1,8 @@
-import type { VNode, EventListenerStateTransformer } from "./types/index";
+import type {
+  AppGlobalState,
+  VNode,
+  EventListenerStateTransformer,
+} from "./types/index";
 
 /**
  * Factory function to create a new `mount` instance with the
@@ -8,7 +12,7 @@ import type { VNode, EventListenerStateTransformer } from "./types/index";
  * `mount` creates a new DOM element based on the given `VNode` and mounts it
  * onto the given parent container element / DOM node.
  */
-export const mountFF = <State>(
+export const mountFF = <State extends AppGlobalState = any>(
   eventHandlerWrapper: (
     eventHandler: EventListenerStateTransformer<State>
   ) => (event: Event) => void

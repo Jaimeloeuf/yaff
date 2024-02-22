@@ -8,7 +8,9 @@ export class Store {
    * localStorage. If no stored global state found, use `defaultInitialState`
    * as the initial global state.
    */
-  static init<State>(defaultInitialState: State): State {
+  static init<State extends AppGlobalState = any>(
+    defaultInitialState: State
+  ): State {
     const state = localStorage.getItem(Store.storeKey);
 
     return state === null
@@ -23,7 +25,9 @@ export class Store {
    * Factory function to create a `StateChangeHook` to save state (only the
    * properties as specified in `pathToCache` array if given) to localStorage.
    */
-  static createSave<State extends AppGlobalState>(pathToCache?: Array<string>) {
+  static createSave<State extends AppGlobalState = any>(
+    pathToCache?: Array<string>
+  ) {
     return pathToCache === undefined
       ? (state: State) =>
           localStorage.setItem(Store.storeKey, JSON.stringify(state))
