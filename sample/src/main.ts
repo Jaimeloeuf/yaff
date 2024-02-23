@@ -13,8 +13,8 @@ function main() {
   }
 
   yaff
-    .appState(
-      Store.init({
+    .appState<State>(
+      Store.init<State>({
         newTodo: "",
         todos: [],
       }),
