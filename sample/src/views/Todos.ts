@@ -21,7 +21,7 @@ function removeTodo(
   updateState(state);
 }
 
-export function Todos({ state, reRender }: AppContext<State>) {
+export function Todos({ state }: AppContext<State>) {
   return f
     .create("div")
     .class("mx-auto max-w-screen-sm p-6")
@@ -41,9 +41,9 @@ export function Todos({ state, reRender }: AppContext<State>) {
           .class(
             "text-xl underline underline-offset-4 decoration-1 decoration-zinc-300 text-zinc-400 font-thin",
           )
-          .event("click", () => {
+          .event("click", ({ queueReRender }: EventContext<State>) => {
             window.history.pushState({}, "", "/about");
-            reRender();
+            queueReRender();
           })
           .child("about"),
       ]),

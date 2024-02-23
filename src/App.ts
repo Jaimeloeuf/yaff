@@ -39,6 +39,14 @@ export class App<State extends AppGlobalState = any> {
    */
   private preRenderHooks: Array<PreRenderHook<State>> = [];
 
+  /**
+   * Instance variable that acts as a flag to track whether there is a pending
+   * re-rendering queued.
+   *
+   * ### See `queueReRender` method for more details
+   */
+  private reRenderQueued: boolean = false;
+
   constructor(
     container: HTMLElement,
     private state: State,
@@ -51,7 +59,7 @@ export class App<State extends AppGlobalState = any> {
     this.appContext = {
       state: this.state,
       updateState: this.updateState.bind(this),
-      reRender: this.reRender.bind(this),
+      queueReRender: this.queueReRender.bind(this),
     };
 
     // Initialise all plugins, and save any hooks returned.
@@ -110,6 +118,30 @@ export class App<State extends AppGlobalState = any> {
   }
 
   /**
+   * Call this method to queue for a new re-render in the next event loop.
+   *
+   * This is an optimisation that combines multiple synchronous re-render
+   * requests into a single re-rendering that is ran once the application code
+   * yields control back to the framework in the next event loop.
+   */
+  private queueReRender() {
+    // If there is already a reRenderQueued, do nothing
+    if (this.reRenderQueued === true) {
+      return;
+    }
+
+    this.reRenderQueued = true;
+
+    // Use setTimeout to re-render in the next event loop.
+    // `reRenderQueued` flag is always cleared synchronously after re-render to
+    // prevent future re-render requests from being ignored.
+    setTimeout(() => {
+      this.reRender();
+      this.reRenderQueued = false;
+    });
+  }
+
+  /**
    * Run all stateChangeHook functions to let them know that state is updated,
    * and optionally use the transformed state if any as the new state.
    */
@@ -142,7 +174,7 @@ export class App<State extends AppGlobalState = any> {
   }
 
   /**
-   * Update state, run all stateChangeHooks and re-render UI.
+   * Update state, run all stateChangeHooks and queue a UI re-render.
    *
    * Users can pass in only parts of the `State` that they want to update, as
    * this will help to perform the spread operation for them to fill in the
@@ -151,6 +183,6 @@ export class App<State extends AppGlobalState = any> {
   private updateState(newState: Partial<State>) {
     this.state = { ...this.state, ...newState };
     this.runStateChangeHooks();
-    this.reRender();
+    this.queueReRender();
   }
 }

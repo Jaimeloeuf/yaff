@@ -5,7 +5,7 @@ import type { AppGlobalState, AppContext } from "../types/index";
  * controls like back/forward buttons.
  */
 export function reRenderOnRouteChange<State extends AppGlobalState = any>({
-  reRender,
+  queueReRender,
 }: AppContext<State>) {
-  window.addEventListener("popstate", () => reRender());
+  window.addEventListener("popstate", () => queueReRender());
 }

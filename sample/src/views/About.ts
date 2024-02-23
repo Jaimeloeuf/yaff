@@ -22,9 +22,9 @@ export function About() {
         .class(
           "pt-12 underline underline-offset-4 decoration-zinc-300 text-zinc-500",
         )
-        .event("click", ({ reRender }: EventContext<State>) => {
+        .event("click", ({ queueReRender }: EventContext<State>) => {
           window.history.pushState({}, "", "/");
-          reRender();
+          queueReRender();
         })
         .child("Back to Home"),
     ]);

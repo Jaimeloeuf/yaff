@@ -8,9 +8,9 @@ export function NotFound() {
       f.p.class("text-9xl font-thin text-zinc-400").child("Page Not Found"),
       f.button
         .class("pt-8 underline underline-offset-4 text-zinc-500")
-        .event("click", ({ reRender }: EventContext<State>) => {
+        .event("click", ({ queueReRender }: EventContext<State>) => {
           window.history.pushState({}, "", "/");
-          reRender();
+          queueReRender();
         })
         .child("Back to Home"),
     ]);

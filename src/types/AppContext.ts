@@ -15,11 +15,17 @@ export interface AppContext<State extends AppGlobalState = any> {
   /**
    * Call this function to update the global app state and trigger a re-render
    * using the new state.
+   *
+   * Note this uses `queueReRender` under the hood to trigger re-renders, so
+   * multiple synchronous calls to this will only re-render once.
    */
   updateState: (state: Partial<State>) => void;
 
   /**
    * Call this function to trigger a reRender
+   *
+   * Note that multiple synchronous calls to this will be combined to only
+   * re-render once.
    */
-  reRender: () => void;
+  queueReRender: () => void;
 }
