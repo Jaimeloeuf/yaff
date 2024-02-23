@@ -1,4 +1,10 @@
-import { yaff, Store, debugPlugin, reRenderOnRouteChange } from "../../dist";
+import {
+  yaff,
+  Store,
+  debugVNodeRenderingTime,
+  debugPlugin,
+  reRenderOnRouteChange,
+} from "../../dist";
 import { App } from "./views/App";
 import type { State } from "./State";
 
@@ -19,7 +25,8 @@ function main() {
         todos: [],
       }),
     )
-    .useRootComponent(App)
+    .useRootComponent(debugVNodeRenderingTime(App))
+    // .useRootComponent(App) // Use this if no need for debugging
     .usePlugins(debugPlugin, reRenderOnRouteChange)
     .useStateChangeHooks(Store.createSave(["todos"]))
     .create(appRootElement);
