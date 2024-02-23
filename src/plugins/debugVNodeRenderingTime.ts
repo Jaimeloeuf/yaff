@@ -11,10 +11,11 @@ export function debugVNodeRenderingTime<State extends AppGlobalState = any>(
     const vNode = component(...args);
     const timerEnd = performance.now();
 
-    const timeTakenInMs = timerEnd - timerStart;
-    console.debug(
-      `[${component.name}] VNode rendered in: ${timeTakenInMs.toFixed(2)}ms`
-    );
+    const timeTakenInMs = (
+      Math.trunc((timerEnd - timerStart) * 100) / 100
+    ).toFixed(3);
+
+    console.debug(`[${component.name}] VNode rendered in: ${timeTakenInMs} ms`);
 
     return vNode;
   };
