@@ -11,6 +11,53 @@ import type {
   AppContext,
 } from "./types/index";
 
+let globalReRender: any;
+
+type ComponentHookPair<T> = [() => T, (newState: T) => void];
+let componentHooks: Array<ComponentHookPair<any>> = [];
+let currentHookIndex = 0;
+
+export function useState<T>(initialState: T): ComponentHookPair<T> {
+  console.log("useState called with index", currentHookIndex);
+
+  let hookPair = componentHooks[currentHookIndex];
+
+  // If hookPair is not undefined it means that this is not the first render as
+  // the getter/setter pair already exists. Return it and increment hook index
+  // before the next use Hook call.
+  if (hookPair !== undefined) {
+    currentHookIndex++;
+    return hookPair;
+  }
+
+  let internalState = initialState;
+
+  /** Getter function for the internal state */
+  const getState = (): T => internalState;
+
+  /** Update state and trigger a re-render */
+  function setState(nextState: T) {
+    internalState = nextState;
+
+    // Reset currentHookIndex before re-rendering so that components can get
+    // back their state as long as calls to useState is stable across renders.
+    currentHookIndex = 0;
+
+    // Trigger a re-render
+    globalReRender();
+  }
+
+  // If it is the first time rendering, create a new getter/setter pair.
+  hookPair = [getState, setState];
+
+  // Store the getter/setter pair for future renders and increment hook index
+  // before the next use Hook call.
+  componentHooks.push(hookPair);
+  currentHookIndex++;
+
+  return hookPair;
+}
+
 export class App<State extends AppGlobalState = any> {
   /**
    * The current app's AppContext<State>
@@ -61,6 +108,7 @@ export class App<State extends AppGlobalState = any> {
       updateState: this.updateState.bind(this),
       queueReRender: this.queueReRender.bind(this),
     };
+    globalReRender = this.appContext.queueReRender;
 
     // Initialise all plugins, and save any hooks returned.
     if (plugins !== undefined) {
