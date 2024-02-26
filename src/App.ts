@@ -15,11 +15,16 @@ let globalReRender: any;
 
 type ComponentHookPair<T> = [() => T, (newState: T) => void];
 let componentHooks: Array<ComponentHookPair<any>> = [];
+
+/**
+ * This needs to be reset to 0 before every single render to ensure that the
+ * right component `ComponentHookPair` is returned to the useState caller since
+ * this is used to track the useState call order within all the component to
+ * determine which pair belongs to which caller.
+ */
 let currentHookIndex = 0;
 
 export function useState<T>(initialState: T): ComponentHookPair<T> {
-  console.log("useState called with index", currentHookIndex);
-
   let hookPair = componentHooks[currentHookIndex];
 
   // If hookPair is not undefined it means that this is not the first render as
@@ -39,10 +44,6 @@ export function useState<T>(initialState: T): ComponentHookPair<T> {
   function setState(nextState: T) {
     internalState = nextState;
 
-    // Reset currentHookIndex before re-rendering so that components can get
-    // back their state as long as calls to useState is stable across renders.
-    currentHookIndex = 0;
-
     // Trigger a re-render
     globalReRender();
   }
@@ -57,6 +58,13 @@ export function useState<T>(initialState: T): ComponentHookPair<T> {
 
   return hookPair;
 }
+
+/**
+ * PreRenderHook function to reset `currentHookIndex` before every single render
+ * to make sure that components always get their state back for as long as calls
+ * to `useState` is stable across renders.
+ */
+const resetHookIndex: PreRenderHook = () => (currentHookIndex = 0);
 
 export class App<State extends AppGlobalState = any> {
   /**
@@ -83,8 +91,11 @@ export class App<State extends AppGlobalState = any> {
    *
    * Note that `PreRenderHooks` runs right before re-rendering happens and after
    * all `stateChangeHooks` have ran.
+   *
+   * `resetHookIndex` PreRenderHook is always ran first to ensure useState hook
+   * works by default without any user intervention.
    */
-  private preRenderHooks: Array<PreRenderHook<State>> = [];
+  private preRenderHooks: Array<PreRenderHook<State>> = [resetHookIndex];
 
   /**
    * Instance variable that acts as a flag to track whether there is a pending
