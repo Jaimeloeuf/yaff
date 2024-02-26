@@ -1,16 +1,13 @@
-import { AppContext, EventContext, f } from "../../../dist";
+import { AppContext, EventContext, f, useState } from "../../../dist";
 import type { State } from "../State";
 
-function addTodo({ state, updateState }: EventContext<State>) {
-  if (state.newTodo === "") {
+function addTodo({ state, updateState }: EventContext<State>, input: string) {
+  if (input === "") {
     alert("Please enter a valid todo");
     return;
   }
 
-  updateState({
-    newTodo: "",
-    todos: [state.newTodo, ...state.todos],
-  });
+  updateState({ todos: [input, ...state.todos] });
 }
 
 function removeTodo(
@@ -22,6 +19,8 @@ function removeTodo(
 }
 
 export function Todos({ state }: AppContext<State>) {
+  const [input, setInput] = useState("");
+
   return f
     .create("div")
     .class("mx-auto max-w-screen-sm p-6")
@@ -54,16 +53,15 @@ export function Todos({ state }: AppContext<State>) {
           .attrs({
             type: "text",
             placeholder: "Add a new todo here...",
-            value: state.newTodo,
+            value: input(),
           })
-          .event("input", ({ event, updateState }) =>
-            updateState({
-              newTodo: (event.target as HTMLInputElement).value,
-            }),
+          .event("input", ({ event }) =>
+            setInput((event.target as HTMLInputElement).value),
           )
           .event("keydown", (context: EventContext<State>) => {
             if ((context.event as KeyboardEvent).key === "Enter") {
-              addTodo(context);
+              addTodo(context, input());
+              setInput("");
             }
           })
           .create(),
@@ -73,7 +71,10 @@ export function Todos({ state }: AppContext<State>) {
           .child(
             f.button
               .class("text-4xl font-thin")
-              .event("click", addTodo)
+              .event("click", (context: EventContext<State>) => {
+                addTodo(context, input());
+                setInput("");
+              })
               .child("+"),
           ),
       ]),

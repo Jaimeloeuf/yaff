@@ -21,7 +21,6 @@ function main() {
   yaff
     .appState<State>(
       Store.init<State>({
-        newTodo: "",
         todos: [],
       }),
     )
