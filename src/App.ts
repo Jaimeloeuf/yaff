@@ -1,5 +1,6 @@
 import { mountFF } from "./mount";
 import { patchFF } from "./patch";
+import { setQueueReRender, queueReRender } from "./reRender";
 import type {
   AppGlobalState,
   VNode,
@@ -10,8 +11,6 @@ import type {
   Plugin,
   AppContext,
 } from "./types/index";
-
-let globalReRender: any;
 
 type ComponentHookPair<T> = [() => T, (newState: T) => void];
 let componentHooks: Array<ComponentHookPair<any>> = [];
@@ -43,9 +42,7 @@ export function useState<T>(initialState: T): ComponentHookPair<T> {
   /** Update state and trigger a re-render */
   function setState(nextState: T) {
     internalState = nextState;
-
-    // Trigger a re-render
-    globalReRender();
+    queueReRender();
   }
 
   // If it is the first time rendering, create a new getter/setter pair.
@@ -119,7 +116,10 @@ export class App<State extends AppGlobalState = any> {
       updateState: this.updateState.bind(this),
       queueReRender: this.queueReRender.bind(this),
     };
-    globalReRender = this.appContext.queueReRender;
+
+    // Set the globally shared queueReRender function so it can be called by any
+    // other modules in this library without having to bind it in its closure.
+    setQueueReRender(this.appContext.queueReRender);
 
     // Initialise all plugins, and save any hooks returned.
     if (plugins !== undefined) {
