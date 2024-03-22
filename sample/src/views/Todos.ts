@@ -1,5 +1,7 @@
-import { AppContext, EventContext, f, useState } from "../../../dist";
+import { AppContext, EventContext, f, localState } from "../../../dist";
 import type { State } from "../State";
+
+const { useState } = localState();
 
 function addTodo({ state, updateState }: EventContext<State>, input: string) {
   if (input === "") {

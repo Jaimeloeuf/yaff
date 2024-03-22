@@ -2,6 +2,7 @@ import { mountFF } from "./mount";
 import { patchFF } from "./patch";
 import { setQueueReRender } from "./reRender";
 import { resetHookIndex } from "./useState";
+import { resetAllHookIndex } from "./localState";
 import type {
   AppGlobalState,
   VNode,
@@ -42,7 +43,10 @@ export class App<State extends AppGlobalState = any> {
    * `resetHookIndex` PreRenderHook is always ran first to ensure useState hook
    * works by default without any user intervention.
    */
-  private preRenderHooks: Array<PreRenderHook<State>> = [resetHookIndex];
+  private preRenderHooks: Array<PreRenderHook<State>> = [
+    resetHookIndex,
+    resetAllHookIndex,
+  ];
 
   /**
    * Instance variable that acts as a flag to track whether there is a pending
