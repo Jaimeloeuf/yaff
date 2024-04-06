@@ -1,3 +1,4 @@
+import type { VNode } from "./VNode";
 import type { RenderFunction } from "./RenderFunction";
 import type { ComponentHooks } from "./ComponentHook";
 
@@ -14,6 +15,12 @@ export type Component = {
    * The Render Function that is used to generate VNodes of this component
    */
   renderFunction: RenderFunction;
+
+  /**
+   * This component's VNode generated during the latest render. Can be null if
+   * this Component hasnt been rendered before.
+   */
+  latestVNode: VNode | null;
 
   /**
    * Hooks data for this specific component.
@@ -37,6 +44,7 @@ export type Component = {
 export function createComponent(renderFunction: RenderFunction): Component {
   return {
     renderFunction,
+    latestVNode: null,
     hooks: [],
     hookIndex: 0,
   };

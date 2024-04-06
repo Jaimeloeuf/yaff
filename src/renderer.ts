@@ -21,10 +21,7 @@ export function renderer(
   container: HTMLElement | ParentNode
 ) {
   currentComponent = component;
-
   currentComponent.hookIndex = 0;
-
-  const vnode = currentComponent.renderFunction();
-
-  mount(vnode, container);
+  currentComponent.latestVNode = currentComponent.renderFunction();
+  mount(currentComponent.latestVNode, container);
 }
