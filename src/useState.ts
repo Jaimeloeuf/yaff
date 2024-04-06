@@ -1,8 +1,11 @@
 import { queueReRender } from "./reRender";
-import type { PreRenderHook } from "./types/index";
+import type {
+  ComponentHookPair,
+  ComponentHooks,
+  PreRenderHook,
+} from "./types/index";
 
-type ComponentHookPair<T> = [() => T, (newState: T) => void];
-let componentHooks: Array<ComponentHookPair<any>> = [];
+const componentHooks: ComponentHooks<any> = [];
 
 /**
  * This needs to be reset to 0 before every single render to ensure that the
