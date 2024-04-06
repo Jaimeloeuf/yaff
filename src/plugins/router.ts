@@ -1,21 +1,21 @@
 import { f } from "../f";
-import type { ComponentFunction } from "../types/index";
+import type { RenderFunction } from "../types/index";
 
 type RouteObject = {
   path: string;
   name: string;
-  componentFunction: ComponentFunction;
+  renderFunction: RenderFunction;
 };
 
 type RouterConfig = {
   routes: Array<RouteObject>;
-  notFoundComponent?: ComponentFunction;
+  notFoundComponent?: RenderFunction;
 };
 
 /**
  * Default 404 not found component used when user did not supply one.
  */
-const defaultNotFoundComponent: ComponentFunction = () => f.h1.child("404");
+const defaultNotFoundComponent: RenderFunction = () => f.h1.child("404");
 
 /**
  * Setup router to declaratively define route --> component mappings.
@@ -30,7 +30,7 @@ export function router(config: RouterConfig) {
     const matchedRoute = config.routes
       .map((route) => ({
         path: route.path,
-        component: route.componentFunction(),
+        component: route.renderFunction(),
       }))
       .find((route) => route.path === window.location.pathname);
 

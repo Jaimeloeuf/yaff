@@ -1,5 +1,5 @@
 import { App } from "./App";
-import type { ComponentFunction } from "./types/index";
+import type { RenderFunction } from "./types/index";
 
 /**
  * `yaff` uses the builder pattern to get all the app options/properties from
@@ -10,11 +10,11 @@ export class yaff {
    * Start the builder process by setting the root UI component.
    * Returns this to chain method calls using the builder pattern.
    */
-  static createAppWith(rootComponent: ComponentFunction) {
+  static createAppWith(rootComponent: RenderFunction) {
     return new yaff(rootComponent);
   }
 
-  constructor(private readonly rootComponent: ComponentFunction) {}
+  constructor(private readonly rootComponent: RenderFunction) {}
 
   /**
    * Create new app using the options set and mount onto the provided DOM

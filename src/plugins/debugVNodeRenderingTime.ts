@@ -1,9 +1,9 @@
-import type { ComponentFunction } from "../types/index";
+import type { RenderFunction } from "../types/index";
 
 /**
  * Wraps a component to log how long it took to render that component's VNode.
  */
-export function debugVNodeRenderingTime(component: ComponentFunction) {
+export function debugVNodeRenderingTime(component: RenderFunction) {
   return function (...args: Parameters<typeof component>) {
     const timerStart = performance.now();
     const vNode = component(...args);

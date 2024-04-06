@@ -1,7 +1,7 @@
 import { mountFF } from "./mount";
 import { patchFF } from "./patch";
 import { setQueueReRender } from "./reRender";
-import type { VNode, ComponentFunction } from "./types/index";
+import type { VNode, RenderFunction } from "./types/index";
 
 export class App {
   private currentVNode: VNode;
@@ -18,7 +18,7 @@ export class App {
 
   constructor(
     container: HTMLElement,
-    private readonly rootComponent: ComponentFunction
+    private readonly rootComponent: RenderFunction
   ) {
     // Set the globally shared queueReRender function so it can be called by any
     // other modules in this library without having to bind it in its closure.
