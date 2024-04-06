@@ -20,6 +20,15 @@ export type Component = {
    */
   hooks: ComponentHooks<any>;
 
+  /**
+   * Current hook index used by this component instance.
+   *
+   * This needs to be reset to 0 before every single render to ensure that the
+   * right component `ComponentHookPair` is returned to the hook user since
+   * this is used to track the hook use order within all this component to
+   * determine which pair belongs to which user.
+   */
+  hookIndex: number;
   // @todo
   // Child Component
   // Parent Component
@@ -29,5 +38,6 @@ export function createComponent(renderFunction: RenderFunction): Component {
   return {
     renderFunction,
     hooks: [],
+    hookIndex: 0,
   };
 }
