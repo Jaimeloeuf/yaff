@@ -1,4 +1,5 @@
-import { App } from "./App";
+import { renderer } from "./renderer";
+import { Component, createComponent } from "./types/index";
 import type { RenderFunction } from "./types/index";
 
 /**
@@ -11,16 +12,16 @@ export class yaff {
    * Returns this to chain method calls using the builder pattern.
    */
   static createAppWith(rootComponent: RenderFunction) {
-    return new yaff(rootComponent);
+    return new yaff(createComponent(rootComponent));
   }
 
-  constructor(private readonly rootComponent: RenderFunction) {}
+  constructor(private readonly rootComponent: Component) {}
 
   /**
    * Create new app using the options set and mount onto the provided DOM
    * container element.
    */
   mountAppOn(container: HTMLElement) {
-    return new App(container, this.rootComponent);
+    renderer(this.rootComponent, container);
   }
 }
