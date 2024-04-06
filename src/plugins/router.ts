@@ -28,10 +28,15 @@ export function router(config: RouterConfig) {
   function routerViewComponent<State extends AppGlobalState = any>(
     ctx: AppContext<State>
   ) {
-    for (const route of config.routes) {
-      if (window.location.pathname === route.path) {
-        return route.component(ctx);
-      }
+    // Create every single vDOM component first before finding the one component
+    // that matches the current route, so that all the hooks will be called in
+    // order throughout the entire app as hooks storage is shared globally.
+    const matchedRoute = config.routes
+      .map((route) => ({ path: route.path, component: route.component(ctx) }))
+      .find((route) => route.path === window.location.pathname);
+
+    if (matchedRoute !== undefined) {
+      return matchedRoute.component;
     }
 
     return config.notFoundComponent !== undefined
