@@ -1,4 +1,4 @@
-import type { VNode, VNodes, HTMLTags, EventHandler } from "./types/index";
+import type { VNode, VNodes, HTMLTags } from "./types/index";
 
 export class f {
   /**
@@ -404,7 +404,7 @@ export class f {
   /**
    * Returns `this` to make this method chainable.
    */
-  event(eventName: string, eventHandler: EventHandler) {
+  event(eventName: string, eventHandler: (event: Event) => void) {
     if (this._event === undefined) {
       this._event = {};
     }

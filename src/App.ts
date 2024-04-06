@@ -1,11 +1,11 @@
-import { mountFF } from "./mount";
+import { mount } from "./mount";
 import { patchFF } from "./patch";
 import { setQueueReRender } from "./reRender";
 import type { VNode, RenderFunction } from "./types/index";
 
 export class App {
   private currentVNode: VNode;
-  private mount: (vnode: VNode, container: HTMLElement | ParentNode) => void;
+  private mount: typeof mount;
   private patch: (originalVNode: VNode, newVNode: VNode) => void;
 
   /**
@@ -24,7 +24,7 @@ export class App {
     // other modules in this library without having to bind it in its closure.
     setQueueReRender(this.queueReRender);
 
-    this.mount = mountFF((eventHandler) => (event) => eventHandler({ event }));
+    this.mount = mount;
     this.patch = patchFF(this.mount);
 
     this.currentVNode = rootComponent();
