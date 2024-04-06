@@ -1,11 +1,9 @@
-import type { AppGlobalState, ComponentFunction } from "../types/index";
+import type { ComponentFunction } from "../types/index";
 
 /**
  * Wraps a component to log how long it took to render that component's VNode.
  */
-export function debugVNodeRenderingTime<State extends AppGlobalState = any>(
-  component: ComponentFunction<State>
-) {
+export function debugVNodeRenderingTime(component: ComponentFunction) {
   return function (...args: Parameters<typeof component>) {
     const timerStart = performance.now();
     const vNode = component(...args);

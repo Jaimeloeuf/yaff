@@ -1,17 +1,14 @@
-import { AppContext, EventContext, f, useState } from "../../../dist";
-import type { State } from "../State";
+import { f, useState } from "../../../dist";
 
-function saveUsername({ updateState }: EventContext<State>, input: string) {
-  if (input === "") {
-    alert("Please enter a valid username");
-    return;
-  }
-
-  updateState({ username: input });
+function saveUsername(input: string) {
+  // if (input === "") {
+  //   alert("Please enter a valid username");
+  //   return;
+  // }
 }
 
-export function Settings({ state }: AppContext<State>) {
-  const [username, setUsername] = useState(state.username);
+export function Settings() {
+  const [username, setUsername] = useState("");
 
   return f
     .create("div")
@@ -31,9 +28,9 @@ export function Settings({ state }: AppContext<State>) {
         .event("input", ({ event }) =>
           setUsername((event.target as HTMLInputElement).value),
         )
-        .event("keydown", (context: EventContext<State>) => {
+        .event("keydown", (context) => {
           if ((context.event as KeyboardEvent).key === "Enter") {
-            saveUsername(context, username());
+            saveUsername(username());
             setUsername("");
           }
         })

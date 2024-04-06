@@ -1,5 +1,4 @@
-import { f, EventContext } from "../../../dist";
-import type { State } from "../State";
+import { f } from "../../../dist";
 
 export function About() {
   return f.div
@@ -22,7 +21,7 @@ export function About() {
         .class(
           "pt-12 underline underline-offset-4 decoration-zinc-300 text-zinc-500",
         )
-        .event("click", ({ queueReRender }: EventContext<State>) => {
+        .event("click", ({ queueReRender }) => {
           window.history.pushState({}, "", "/");
           queueReRender();
         })

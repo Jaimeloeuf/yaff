@@ -1,24 +1,17 @@
-import { AppContext, EventContext, f, useState } from "../../../dist";
-import type { State } from "../State";
+import { EventContext, f, useState } from "../../../dist";
 
-function addTodo({ state, updateState }: EventContext<State>, input: string) {
-  if (input === "") {
-    alert("Please enter a valid todo");
-    return;
-  }
-
-  updateState({ todos: [input, ...state.todos] });
+function addTodo(input: string) {
+  // if (input === "") {
+  //   alert("Please enter a valid todo");
+  //   return;
+  // }
 }
 
-function removeTodo(
-  index: number,
-  { state, updateState }: EventContext<State>,
-) {
-  state.todos.splice(index, 1);
-  updateState(state);
+function removeTodo(index: number) {
+  return;
 }
 
-export function Todos({ state }: AppContext<State>) {
+export function Todos() {
   const [input, setInput] = useState("");
 
   return f
@@ -41,7 +34,7 @@ export function Todos({ state }: AppContext<State>) {
             .class(
               "text-xl underline underline-offset-4 decoration-1 decoration-zinc-300 text-zinc-400 font-thin",
             )
-            .event("click", ({ queueReRender }: EventContext<State>) => {
+            .event("click", ({ queueReRender }) => {
               window.history.pushState({}, "", "/settings");
               queueReRender();
             })
@@ -51,7 +44,7 @@ export function Todos({ state }: AppContext<State>) {
             .class(
               "text-xl underline underline-offset-4 decoration-1 decoration-zinc-300 text-zinc-400 font-thin",
             )
-            .event("click", ({ queueReRender }: EventContext<State>) => {
+            .event("click", ({ queueReRender }) => {
               window.history.pushState({}, "", "/about");
               queueReRender();
             })
@@ -70,9 +63,9 @@ export function Todos({ state }: AppContext<State>) {
           .event("input", ({ event }) =>
             setInput((event.target as HTMLInputElement).value),
           )
-          .event("keydown", (context: EventContext<State>) => {
+          .event("keydown", (context) => {
             if ((context.event as KeyboardEvent).key === "Enter") {
-              addTodo(context, input());
+              addTodo(input());
               setInput("");
             }
           })
@@ -83,8 +76,8 @@ export function Todos({ state }: AppContext<State>) {
           .child(
             f.button
               .class("text-4xl font-thin")
-              .event("click", (context: EventContext<State>) => {
-                addTodo(context, input());
+              .event("click", (context) => {
+                addTodo(input());
                 setInput("");
               })
               .child("+"),
@@ -111,7 +104,11 @@ export function Todos({ state }: AppContext<State>) {
                     f.div
                       .class("flex flex-row items-start justify-between")
                       .child([
-                        f.p.class("text-zinc-900 font-extralight").child(todo),
+                        f.p
+                          .class(
+                            "p-0.5 text-zinc-900 font-extralight break-all",
+                          )
+                          .child(todo),
                         f.div
                           .class(
                             "flex flex-col items-center justify-center px-1.5 rounded bg-white shadow-md group-hover:shadow-red-300",
@@ -121,7 +118,7 @@ export function Todos({ state }: AppContext<State>) {
                               .class(
                                 "text-zinc-400 group-hover:text-red-400 select-none",
                               )
-                              .event("click", (ctx) => removeTodo(index, ctx))
+                              .event("click", (ctx) => removeTodo(index))
                               .child("X"),
                           ),
                       ]),

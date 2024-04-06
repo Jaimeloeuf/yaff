@@ -1,9 +1,5 @@
 import { f } from "../f";
-import type {
-  ComponentFunction,
-  AppGlobalState,
-  AppContext,
-} from "../types/index";
+import type { ComponentFunction } from "../types/index";
 
 type RouteObject = {
   path: string;
@@ -16,8 +12,6 @@ type RouterConfig = {
   notFoundComponent?: ComponentFunction;
 };
 
-type Route = { path: string };
-
 /**
  * Default 404 not found component used when user did not supply one.
  */
@@ -29,16 +23,14 @@ const defaultNotFoundComponent: ComponentFunction = () => f.h1.child("404");
  * @todo support dynamic route component loading just like vue-router
  */
 export function router(config: RouterConfig) {
-  function routerViewComponent<State extends AppGlobalState = any>(
-    ctx: AppContext<State>
-  ) {
+  function routerViewComponent() {
     // Create every single vDOM component first before finding the one component
     // that matches the current route, so that all the hooks will be called in
     // order throughout the entire app as hooks storage is shared globally.
     const matchedRoute = config.routes
       .map((route) => ({
         path: route.path,
-        component: route.componentFunction(ctx),
+        component: route.componentFunction(),
       }))
       .find((route) => route.path === window.location.pathname);
 
@@ -47,8 +39,8 @@ export function router(config: RouterConfig) {
     }
 
     return config.notFoundComponent !== undefined
-      ? config.notFoundComponent(ctx)
-      : defaultNotFoundComponent(ctx);
+      ? config.notFoundComponent()
+      : defaultNotFoundComponent();
   }
 
   return { routerViewComponent };

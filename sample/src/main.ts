@@ -1,12 +1,5 @@
-import {
-  yaff,
-  Store,
-  debugVNodeRenderingTime,
-  debugPlugin,
-  reRenderOnRouteChange,
-} from "../../dist";
+import { yaff } from "../../dist";
 import { App } from "./views/App";
-import type { State } from "./State";
 
 /**
  * Define a new application to mount onto the DOM.
@@ -18,18 +11,7 @@ function main() {
     throw new Error("App root element 'app' does not exist");
   }
 
-  yaff
-    .appState<State>(
-      Store.init<State>({
-        username: "",
-        todos: [],
-      }),
-    )
-    .useRootComponent(debugVNodeRenderingTime(App))
-    // .useRootComponent(App) // Use this if no need for debugging
-    .usePlugins(debugPlugin, reRenderOnRouteChange)
-    .useStateChangeHooks(Store.createSave(["username", "todos"]))
-    .create(appRootElement);
+  yaff.createAppWith(App).mountAppOn(appRootElement);
 }
 
 main();

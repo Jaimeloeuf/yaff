@@ -1,4 +1,4 @@
-import type { AppGlobalState, VNode, EventHandler } from "./types/index";
+import type { VNode, EventHandler } from "./types/index";
 
 /**
  * Factory function to create a new `mount` instance with the
@@ -8,10 +8,8 @@ import type { AppGlobalState, VNode, EventHandler } from "./types/index";
  * `mount` creates a new DOM element based on the given `VNode` and mounts it
  * onto the given parent container element / DOM node.
  */
-export const mountFF = <State extends AppGlobalState = any>(
-  eventHandlerWrapper: (
-    eventHandler: EventHandler<State>
-  ) => (event: Event) => void
+export const mountFF = (
+  eventHandlerWrapper: (eventHandler: EventHandler) => (event: Event) => void
 ) =>
   /**
    * Creates a new DOM element based on the given `VNode` and mounts it onto the

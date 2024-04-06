@@ -1,10 +1,4 @@
-import type {
-  VNode,
-  VNodes,
-  HTMLTags,
-  EventHandler,
-  AppGlobalState,
-} from "./types/index";
+import type { VNode, VNodes, HTMLTags, EventHandler } from "./types/index";
 
 export class f {
   /**
@@ -410,10 +404,7 @@ export class f {
   /**
    * Returns `this` to make this method chainable.
    */
-  event<State extends AppGlobalState = any>(
-    eventName: string,
-    eventHandler: EventHandler<State>
-  ) {
+  event(eventName: string, eventHandler: EventHandler) {
     if (this._event === undefined) {
       this._event = {};
     }

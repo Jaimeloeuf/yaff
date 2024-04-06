@@ -1,5 +1,4 @@
-import { f, EventContext } from "../../../dist";
-import type { State } from "../State";
+import { f } from "../../../dist";
 
 export function NotFound() {
   return f.div
@@ -8,7 +7,7 @@ export function NotFound() {
       f.p.class("text-9xl font-thin text-zinc-400").child("Page Not Found"),
       f.button
         .class("pt-8 underline underline-offset-4 text-zinc-500")
-        .event("click", ({ queueReRender }: EventContext<State>) => {
+        .event("click", ({ queueReRender }) => {
           window.history.pushState({}, "", "/");
           queueReRender();
         })

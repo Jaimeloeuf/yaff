@@ -1,9 +1,5 @@
 import { queueReRender } from "./reRender";
-import type {
-  ComponentHookPair,
-  ComponentHooks,
-  PreRenderHook,
-} from "./types/index";
+import type { ComponentHookPair, ComponentHooks } from "./types/index";
 
 const componentHooks: ComponentHooks<any> = [];
 
@@ -47,10 +43,3 @@ export function useState<T>(initialState: T): ComponentHookPair<T> {
 
   return hookPair;
 }
-
-/**
- * PreRenderHook function to reset `currentHookIndex` before every single render
- * to make sure that components always get their state back for as long as calls
- * to `useState` is stable across renders.
- */
-export const resetHookIndex: PreRenderHook = () => (currentHookIndex = 0);
