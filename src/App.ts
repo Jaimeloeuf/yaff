@@ -1,12 +1,10 @@
 import { mount } from "./mount";
-import { patchFF } from "./patch";
+import { patch } from "./patch";
 import { setQueueReRender } from "./reRender";
 import type { VNode, RenderFunction } from "./types/index";
 
 export class App {
   private currentVNode: VNode;
-  private mount: typeof mount;
-  private patch: (originalVNode: VNode, newVNode: VNode) => void;
 
   /**
    * Instance variable that acts as a flag to track whether there is a pending
@@ -24,11 +22,8 @@ export class App {
     // other modules in this library without having to bind it in its closure.
     setQueueReRender(this.queueReRender);
 
-    this.mount = mount;
-    this.patch = patchFF(this.mount);
-
     this.currentVNode = rootComponent();
-    this.mount(this.currentVNode, container);
+    mount(this.currentVNode, container);
   }
 
   /**
@@ -60,7 +55,7 @@ export class App {
    */
   private reRender() {
     const newVNode = this.rootComponent();
-    this.patch(this.currentVNode, newVNode);
+    patch(this.currentVNode, newVNode);
     this.currentVNode = newVNode;
   }
 }
