@@ -36,15 +36,27 @@ export function Todos({ state }: AppContext<State>) {
                 .child(`(${state.todos.length})`),
           ]),
 
-        f.button
-          .class(
-            "text-xl underline underline-offset-4 decoration-1 decoration-zinc-300 text-zinc-400 font-thin",
-          )
-          .event("click", ({ queueReRender }: EventContext<State>) => {
-            window.history.pushState({}, "", "/about");
-            queueReRender();
-          })
-          .child("about"),
+        f.div.class("flex flex-row gap-4").child([
+          f.button
+            .class(
+              "text-xl underline underline-offset-4 decoration-1 decoration-zinc-300 text-zinc-400 font-thin",
+            )
+            .event("click", ({ queueReRender }: EventContext<State>) => {
+              window.history.pushState({}, "", "/settings");
+              queueReRender();
+            })
+            .child("settings"),
+
+          f.button
+            .class(
+              "text-xl underline underline-offset-4 decoration-1 decoration-zinc-300 text-zinc-400 font-thin",
+            )
+            .event("click", ({ queueReRender }: EventContext<State>) => {
+              window.history.pushState({}, "", "/about");
+              queueReRender();
+            })
+            .child("about"),
+        ]),
       ]),
 
       f.div.class("flex flex-row items-center gap-4").child([
