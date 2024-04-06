@@ -1,7 +1,7 @@
 import { App } from "./App";
 import type {
   AppGlobalState,
-  Component,
+  ComponentFunction,
   Plugin,
   StateChangeHook,
   PreRenderHook,
@@ -21,7 +21,7 @@ export class yaff<State extends AppGlobalState = any> {
     return new yaff<State>(...args);
   }
 
-  private rootComponent?: Component<State>;
+  private rootComponent?: ComponentFunction<State>;
   private plugins?: Array<Plugin<State>>;
   private stateChangeHooks?: Array<StateChangeHook<State>>;
   private preRenderHooks?: Array<PreRenderHook<State>>;
@@ -33,7 +33,7 @@ export class yaff<State extends AppGlobalState = any> {
    *
    * Returns this to chain method calls using the builder pattern.
    */
-  useRootComponent(rootComponent: Component<State>) {
+  useRootComponent(rootComponent: ComponentFunction<State>) {
     this.rootComponent = rootComponent;
     return this;
   }

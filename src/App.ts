@@ -5,7 +5,7 @@ import { resetHookIndex } from "./useState";
 import type {
   AppGlobalState,
   VNode,
-  Component,
+  ComponentFunction,
   StateChangeHook,
   PreRenderHook,
   PluginHooks,
@@ -55,7 +55,7 @@ export class App<State extends AppGlobalState = any> {
   constructor(
     container: HTMLElement,
     private state: State,
-    private readonly rootComponent: Component<State>,
+    private readonly rootComponent: ComponentFunction<State>,
     plugins: undefined | Array<Plugin<State>>,
     stateChangeHooks: undefined | Array<StateChangeHook<State>>,
     preRenderHooks: undefined | Array<PreRenderHook<State>>

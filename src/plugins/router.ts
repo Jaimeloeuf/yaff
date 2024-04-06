@@ -1,15 +1,19 @@
 import { f } from "../f";
-import type { Component, AppGlobalState, AppContext } from "../types/index";
+import type {
+  ComponentFunction,
+  AppGlobalState,
+  AppContext,
+} from "../types/index";
 
 type RouteObject = {
   path: string;
   name: string;
-  component: Component;
+  componentFunction: ComponentFunction;
 };
 
 type RouterConfig = {
   routes: Array<RouteObject>;
-  notFoundComponent?: Component;
+  notFoundComponent?: ComponentFunction;
 };
 
 type Route = { path: string };
@@ -17,7 +21,7 @@ type Route = { path: string };
 /**
  * Default 404 not found component used when user did not supply one.
  */
-const defaultNotFoundComponent: Component = () => f.h1.child("404");
+const defaultNotFoundComponent: ComponentFunction = () => f.h1.child("404");
 
 /**
  * Setup router to declaratively define route --> component mappings.
@@ -32,7 +36,10 @@ export function router(config: RouterConfig) {
     // that matches the current route, so that all the hooks will be called in
     // order throughout the entire app as hooks storage is shared globally.
     const matchedRoute = config.routes
-      .map((route) => ({ path: route.path, component: route.component(ctx) }))
+      .map((route) => ({
+        path: route.path,
+        component: route.componentFunction(ctx),
+      }))
       .find((route) => route.path === window.location.pathname);
 
     if (matchedRoute !== undefined) {
