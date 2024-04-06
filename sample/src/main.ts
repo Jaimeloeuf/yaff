@@ -21,13 +21,14 @@ function main() {
   yaff
     .appState<State>(
       Store.init<State>({
+        username: "",
         todos: [],
       }),
     )
     .useRootComponent(debugVNodeRenderingTime(App))
     // .useRootComponent(App) // Use this if no need for debugging
     .usePlugins(debugPlugin, reRenderOnRouteChange)
-    .useStateChangeHooks(Store.createSave(["todos"]))
+    .useStateChangeHooks(Store.createSave(["username", "todos"]))
     .create(appRootElement);
 }
 
