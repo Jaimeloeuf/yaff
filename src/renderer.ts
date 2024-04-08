@@ -15,6 +15,13 @@ export function getCurrentComponent() {
 
 /**
  * Render a component
+ *
+ * Steps to render a component:
+ * 1. Set given component as the current component that is being rendered.
+ * 1. Reset component's hook storage index.
+ * 1. Run component's render function to create VNode.
+ * 1. Save reference to the newly created VNode on component instance.
+ * 1. Mount VNode onto the given DOM container.
  */
 export function renderer(
   component: Component,
