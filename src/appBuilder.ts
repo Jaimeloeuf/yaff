@@ -1,5 +1,5 @@
 import { renderer } from "./renderer";
-import { Component, createComponent } from "./types/index";
+import { Component } from "./Component";
 import type { RenderFunction } from "./types/index";
 
 /**
@@ -12,7 +12,7 @@ export class yaff {
    * Returns this to chain method calls using the builder pattern.
    */
   static createAppWith(rootComponent: RenderFunction) {
-    return new yaff(createComponent(rootComponent));
+    return new yaff(Component.use(rootComponent));
   }
 
   constructor(private readonly rootComponent: Component) {}

@@ -1,5 +1,5 @@
 import { mount } from "./mount";
-import type { Component } from "./types/index";
+import type { Component } from "./Component";
 
 let currentComponent: Component | null = null;
 
