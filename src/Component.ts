@@ -15,6 +15,11 @@ export class Component {
   static use = (renderFunction: RenderFunction) =>
     new Component(renderFunction);
 
+  /**
+   * Component name used to identify this component during renders
+   */
+  public readonly name: string;
+
   constructor(
     /**
      * The Render Function that is used to generate VNodes of this component
@@ -41,5 +46,7 @@ export class Component {
      * determine which pair belongs to which user.
      */
     public hookIndex: number = 0
-  ) {}
+  ) {
+    this.name = renderFunction.name
+  }
 }
