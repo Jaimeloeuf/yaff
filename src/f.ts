@@ -1,3 +1,4 @@
+import { Component } from "./Component";
 import type { VNode, VNodes, HTMLTags } from "./types/index";
 
 export class f {
@@ -418,7 +419,7 @@ export class f {
    *
    * Call this method last as this will create the `VNode` right after.
    */
-  child(child: VNode | VNodes | string | false = []) {
+  child(child: Component | VNode | VNodes | string | false = []) {
     // No-op to ignore conditionally hidden VNode child values using logical OR
     // and AND operator short circuiting instead of forcing them to use ternary
     // operators to conditional include VNodes..
@@ -445,6 +446,13 @@ export class f {
     // String values are left as is
     else if (typeof child === "string") {
       this._child = child;
+    }
+
+    // If a custom component is passed in, render that component to get back the
+    // VNode it created.
+    else if (child instanceof Component) {
+      // Since `VNode.child` is Array<VNode> or string, nest it in an array.
+      this._child = [child.render()];
     }
 
     // Since `VNode.child` is Array<VNode> or string, nest it in an array.
