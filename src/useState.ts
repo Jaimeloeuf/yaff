@@ -1,5 +1,5 @@
-import { getCurrentComponent } from "./renderer";
-import { queueReRender } from "./reRender";
+import { patch } from "./patch";
+import { getCurrentComponent } from "./currentComponentTracker";
 import type { ComponentHookPair } from "./types/index";
 
 export function useState<T>(initialState: T): ComponentHookPair<T> {
@@ -23,7 +23,12 @@ export function useState<T>(initialState: T): ComponentHookPair<T> {
   /** Update state and trigger a re-render */
   function setState(nextState: T) {
     internalState = nextState;
-    queueReRender();
+
+    // Trigger a re-render on state change, just for the component that owns
+    // this hook and its descendants.
+    const originalVNode = currentComponent.latestVNode;
+    const newVNode = currentComponent.render();
+    patch(originalVNode!, newVNode);
   }
 
   // If it is the first time rendering, create a new getter/setter pair.
