@@ -1,5 +1,4 @@
 import { mount } from "./mount";
-import { renderer } from "./renderer";
 import { Component } from "./Component";
 import type { RenderFunction } from "./types/index";
 
@@ -23,7 +22,7 @@ export class yaff {
    * container element.
    */
   mountAppOn(container: HTMLElement) {
-    const vnode = renderer(this.rootComponent);
+    const vnode = this.rootComponent.render();
     mount(vnode, container);
   }
 }

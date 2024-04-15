@@ -1,3 +1,4 @@
+import { setCurrentComponent } from "./currentComponentTracker";
 import type { VNode, RenderFunction, ComponentHooks } from "./types/index";
 
 /**
@@ -47,6 +48,23 @@ export class Component {
      */
     public hookIndex: number = 0
   ) {
-    this.name = renderFunction.name
+    this.name = renderFunction.name;
+  }
+
+  /**
+   * Render the current component.
+   *
+   * Steps to render a component:
+   * 1. Set component as the current component being rendered / worked on.
+   * 1. Reset component's hook storage index.
+   * 1. Run component's render function to create VNode.
+   * 1. Save reference to the newly created VNode on component instance.
+   * 1. Return the rendered VNode.
+   */
+  render() {
+    setCurrentComponent(this);
+    this.hookIndex = 0;
+    this.latestVNode = this.renderFunction();
+    return this.latestVNode;
   }
 }

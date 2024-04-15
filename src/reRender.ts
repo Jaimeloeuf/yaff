@@ -1,4 +1,4 @@
-import { getCurrentComponent } from "./renderer";
+import { getCurrentComponent } from "./currentComponentTracker";
 import { patch } from "./patch";
 
 /**
