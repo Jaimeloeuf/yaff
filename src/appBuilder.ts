@@ -11,8 +11,8 @@ export class yaff {
    * Start the builder process by setting the root UI component.
    * Returns this to chain method calls using the builder pattern.
    */
-  static createAppWith(rootComponent: RenderFunction) {
-    return new yaff(Component.use(rootComponent));
+  static createAppWith(rootComponentFunction: RenderFunction) {
+    return new yaff(Component.use(rootComponentFunction));
   }
 
   constructor(private readonly rootComponent: Component) {}
