@@ -1,5 +1,6 @@
 import { Component } from "./Component";
-import type { VNode, VNodes, HTMLTags } from "./types/index";
+import { VNode, VNodes } from "./VNode";
+import type { HTMLTags } from "./types/index";
 
 export class f {
   /**
@@ -468,14 +469,15 @@ export class f {
    *
    * Call this directly if the element has no child, e.g. self closing tags.
    */
-  create(): VNode {
-    return {
-      tag: this.tag,
-      attrs: this._attrs,
+  create() {
+    return new VNode(
+      this.tag,
+      this._attrs,
+      this._child ?? [],
+
       // non-null assertion operator (!) is used to circumvent the TS setting
       // `exactOptionalPropertyTypes` in this local context only.
-      event: this._event!,
-      child: this._child ?? [],
-    };
+      this._event!
+    );
   }
 }

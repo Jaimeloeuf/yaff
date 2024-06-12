@@ -1,7 +1,7 @@
 import { mount } from "./mount";
 import { unmount } from "./unmount";
 import { patchAttributes } from "./patchAttributes";
-import type { VNode } from "./types/index";
+import type { VNode } from "./VNode";
 
 /**
  * Patches the difference between the original `vNode` and the new `vNode` to

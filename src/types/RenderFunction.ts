@@ -1,4 +1,4 @@
-import type { VNode } from "./VNode";
+import type { VNode } from "../VNode";
 
 /**
  * A component, is also known as a render function, which is a function that

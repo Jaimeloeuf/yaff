@@ -1,4 +1,4 @@
-import type { VNode } from "./types/index";
+import type { VNode } from "./VNode";
 
 /**
  * Creates a new DOM element based on the given `VNode` and mounts it onto the

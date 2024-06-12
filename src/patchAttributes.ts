@@ -1,4 +1,4 @@
-import type { VNode } from "./types/index";
+import type { VNode } from "./VNode";
 
 /**
  * Patch any changes made to attributes between `VNode`s

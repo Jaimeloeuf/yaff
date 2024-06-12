@@ -1,5 +1,6 @@
 import { setCurrentComponent } from "./currentComponentTracker";
-import type { VNode, RenderFunction, ComponentHooks } from "./types/index";
+import type { VNode } from "./VNode";
+import type { RenderFunction, ComponentHooks } from "./types/index";
 
 /**
  * Internal representation of a component.

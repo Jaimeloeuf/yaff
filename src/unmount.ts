@@ -1,4 +1,4 @@
-import type { VNode } from "./types/index";
+import type { VNode } from "./VNode";
 
 /**
  * Unmount a `VNode` from the DOM.
